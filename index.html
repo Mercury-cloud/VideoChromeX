@@ -1,0 +1,270 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+	<meta charset="UTF-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1.0">
+	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<title>Video Record My Life</title>
+	<link href="video-js.min.css" rel="stylesheet">
+	<script src="video.min.js"></script>
+	<script src="jquery.min.js"></script>
+	<script type="text/javascript" src="RecordRTC.js"></script>
+	<script type="text/javascript" src="videojs.record.js"></script>
+	<script src="semantic/dist/semantic.min.js"></script>
+	<link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
+	<link href="videojs.record.css" rel="stylesheet">
+	<link rel="stylesheet" href="index.css">
+</head>
+<body>
+	<div id="menu" class="ui segment corner-menu">
+			<img id="mainimage" class="ui small circular image middle aligned" src="assets/momdad.jpg">
+			<div class="corner-text">
+					<h2>Video Record My Life</h2>
+					<div class='email-q'>Have questions? info@308systems.com</div>
+					<p id="settings"><img src="/assets/cog.png" alt="Setup">Setup</p>
+			</div>
+			<p id="reminder">SCHEDULE RECORDING REMINDER</p>
+			<div class="coll">
+				<p id="coll">COLLABORATION LINK</p>
+				<div>			
+					<input />
+					<button id="call" class="ui green button">
+						<i class="play icon"></i>
+						CALL
+					  </button>
+				</div>
+				<video id="myVideoSmall" class="hidden"></video>
+			</div>
+
+
+
+			<div class="reminders">
+				<div class="question-big">
+						<h2 class="big-qh"></h2>
+						<h1 class="big-q"></h1>
+						</div>
+						<div id="status" class="hidden"><span class="dot"></span>You are now recording</div>
+				</div>
+			</div>
+	</div>
+	<div class="folders">
+		<div id="recordtab" class="active"><img class="tab-img" src="assets/video-camera.png"/>CREATE VIDEOS/PICTURES</div>
+		<div id="watchtab"><img class="tab-img" src="assets/film.png"></im>VIEW VIDEOS/PICTURES</div>
+	</div>
+	<div id="record" class="content">
+		<div class="sidemenu content">
+			<div class="quantity_bar" align="center">
+				<div><h5>View Archived</h5></div>
+				<div id="quan_title" class="content" align="center"><p>Videos</p><p>Photos</p></div>
+				<div id="quan_title_border"></div>
+			</div>			
+			<div class="main_bar">
+				<div class="ui selection dropdown selected_user">
+					<input type="hidden" name="User">
+					<i class="dropdown icon"></i>
+					<div class="default text">Select User</div>
+					<div id="dropdown" class="menu"></div>
+				</div>
+				<div id="questionSection" class="scroll-y"></div>
+				
+			</div>
+		</div>
+		<div class="video-container">
+			<div class="record-container" align="center">
+				<div class="play-section">
+					<div id="play"><div class="ui card"><img src="assets/play.png" alt="Play">RECORD</div></div>
+					<div id="pause" class="hidden"><div class="ui card"><img src="assets/pause.png" alt="Pause">PAUSE</div></div>
+					<div id="stop" class="hidden"><div class="ui card"><img src="assets/stop.png" alt="Stop">STOP</div></div>
+					<div id="picture" alt="Take Picture"><div class="ui card"><img src="assets/camera.png">TAKE PICTURE</div></div>
+				</div>
+				<div id="eighthundred" class="hidden">RECORDING</div>
+				<video id="myVideo" class="video-js vjs-default-skin"></video>
+				<video id="myPicture" class="hidden"></video>
+			</div>
+		</div>
+	</div>
+	<div id="watch" class="hidden">
+		<div id="watchList" class="sidemenu">
+			<div class="ui selection dropdown watchuserdropdown">
+				<input id="watchuser" type="hidden" name="User">
+				<i class="dropdown icon"></i>
+				<div class="default text">Select User</div>
+				<div class="menu"></div>
+			</div>
+			<div class="watch_guide">
+				<p>Click here to: <span></span></p>
+				<p>Or</p>
+				<p>Click on the video or photograph listed below to view individual files:</p>
+			</div>
+			<div id="questionSectionWatch" class="scroll-y"></div>
+			<div id="file_date_table">
+				<table class="ui sortable table">
+					<thead>
+					    <tr>
+					    	<th class="ten wide sorted ascending">Name</th>
+						    <th class="five wide">Date</th>						    
+					  	</tr>
+					</thead>
+					<tbody class="file_table_body">
+						
+					</tbody>
+				</table>
+			</div>
+		</div>
+		<div class="video-container">
+			<div class="record-container"  align="center">
+				<img id="watchI" src="" alt="image">
+				<video id="myWatchVideo" class="video-js vjs-default-skin"></video>
+			</div>
+		</div>
+	</div>
+	<div class="ui mini modal reminder">
+		<div class="header">
+			Schedule Recording Reminder
+		</div>
+		<div class="content">
+			<p>Would you like to set up a reminder?</p>
+			<div class="field">
+				<input type="text" placeholder="Pick Date/Time">
+			  </div>
+			  <div class="inline fields modal-pad">
+				<label>Send reminder through Text or Phone Call?</label>
+				<div class="field">
+				  <div class="ui radio checkbox">
+					<input type="radio" name="frequency" checked="checked">
+					<label>Text</label>
+				  </div>
+				</div>
+				<div class="field">
+				  <div class="ui radio checkbox">
+					<input type="radio" name="frequency">
+					<label>Phone Call</label>
+				  </div>
+				</div>
+			  </div>
+			  <input type="text" placeholder="Mobile Phone Number">
+		</div>
+		<div class="actions">
+			<div class="ui negative button">
+				Cancel
+			</div>
+			<div class="ui positive right labeled icon button">
+				Save
+				<i class="checkmark icon"></i>
+			</div>
+		</div>
+	</div>
+	<div class="ui mini modal">
+		<div class="header">
+			Save the Recorded Video
+		</div>
+		<div class="content">
+			<p>Do you wish to save?</p>
+		</div>
+		<div class="actions">
+			<div class="ui negative button">
+				No
+			</div>
+			<div class="ui positive right labeled icon button">
+				Yes
+				<i class="checkmark icon"></i>
+			</div>
+		</div>
+	</div>
+	<div class="ui test locked modal">
+		<div class="header">30 Day Trial Ended</div>
+		<div class="content">
+		  <p>Enter the access code to continue using Video Record My Life:</p>
+		  <div class="ui input focus">
+			<input id="code" type="text" placeholder="Access Code">
+		  </div>
+		  <div class="actions">
+			<div class="ui approve button">Enter</div>
+		  </div>
+		</div>
+	  </div>
+	<div class="ui long modal settings">
+			<div class="header">Setup</div>
+			<div class="content">
+				<div id="qHeaders" class="ui segment">
+					<h3>Question Headers</h3>
+					<div id="setupQH"></div>
+					<div class="ui fluid action input">
+						<input type="text" placeholder="Add Question Header">
+						<button class="add-item ui button">+
+						</button>
+					</div>
+				</div>
+				<div id="questions" class="ui segment">
+					<h3>Questions</h3>
+					<div id="setupQ">
+					</div>
+					<div class="ui fluid action input">
+						<input type="text" placeholder="Add Question">
+							<div class="ui selection dropdown setupdropdown">
+								<input type="hidden" name="Headers">
+								<i class="dropdown icon"></i>
+								<div class="default text">Add Header</div>
+								<div class="menu">
+								</div>
+							</div>
+						<button class="add-item ui button">+
+						</button>
+					</div>
+				</div>
+				<div id="users" class="ui segment">
+					<h3>Users</h3>
+					<div id="setupU"></div>
+					<div class="ui fluid action input">
+						<input type="text" placeholder="Add User">
+						<button class="add-item ui button">+
+						</button>
+					</div>
+				</div>
+				<div id="photos" class="ui segment">
+					<h3>Photo Selection</h3>
+					<div class="ui fluid action">
+						<input type="file" id="hidden-input" hidden/>
+						<button class="ui button upload-photo">upload other photo</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		<template id="question-header">
+			<h3 class="ui block header q-header"></h3>
+			<div class="cont"></div>
+		</template>
+		<template id="question">
+			<div class="content">
+				<div class="video_count counter">( <span>0</span> )</div>
+				<div class="photo_count counter">( <span>0</span> )</div>
+				<div class="q"></div>
+				<span class="answered"></span>
+			</div>
+		</template>
+		<template id="user">
+				<div class="item"></div>
+		</template>
+		<template id="question-header-setup">
+			<div title="header" class="ui segment setup-row">
+				<div class="cont q-header"></div>
+				<img class="delete-item" src="assets/bin.png" alt="Delete">
+			</div>
+		</template>
+		<template id="question-setup">
+			<div title="question" class="ui segment setup-row">
+				<div class="q"></div>
+				<div class="ui segment smaller">
+				</div>
+				<img class="delete-item" src="assets/bin.png" alt="Delete">
+			</div>
+		</template>
+		<template id="user-setup">
+			<div title="user" class="ui segment setup-row">
+				<div class="item"></div>
+				<img class="delete-item" src="assets/bin.png" alt="Delete">
+			</div>
+		</template>
+	<script src="index.js"></script>
+</body>
+</html>

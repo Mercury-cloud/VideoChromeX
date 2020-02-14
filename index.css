@@ -1,0 +1,451 @@
+body {
+	min-width: 1000px;
+	height: 1000px;
+}
+
+#menu {
+	display: flex;
+	align-items: center;
+	margin-bottom: 0;
+	min-height: 182px;
+}
+
+.corner-text {
+	display: inline-block;
+}
+
+.corner-menu h2 {
+	display: inline-block;
+	padding: 10px;
+	font-size: 18px;
+	margin: 0;
+}
+
+.corner-menu p {
+	display: flex;
+	align-items: center;
+	padding: 5px;
+}
+
+.corner-menu p img {
+	height: 16px;
+	margin: 0 5px;
+}
+
+.corner-menu p:hover {
+	cursor: pointer;
+	text-decoration: underline;
+}
+
+.content {
+	display: flex;
+	top: 0px;
+	width: 100%;
+	max-height: 100%;
+}
+
+li:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+
+.reminders {
+	margin-left: 30px;
+
+}
+
+.reminders h2 {
+	padding: 10px 0;
+}
+
+.setup-row {
+	display: flex;
+	align-items: center;
+}
+
+.hidden {
+	visibility: hidden;
+	height: 0;
+}
+
+.ui.segment .smaller {
+	margin: -4rem 10px;
+	margin-left: auto;
+	padding: .5rem;
+	width: 150px;
+}
+#questions .ui.selection.dropdown {
+  margin: 14px 0 0 0;
+}
+
+.dot-one {
+	height: 16px;
+  width: 16px;
+  background-color: red;
+  border-radius: 50%;
+	display: inline-block;
+	margin-right: 10px;
+}
+
+.video-container {
+	width: 45%;
+	padding-left: 15px;
+}
+
+.ui.small.image {
+	width: 100px;
+}
+
+.flexalign {
+	display: flex;
+	position: relative;
+	align-items: center;
+}
+
+.ui .modal img {
+	height: 16px;
+	margin-left: auto;
+}
+
+.flexalign p { 
+	margin-top: 1rem;
+	margin-bottom: 0;
+	width: 200px;
+}
+
+.flexalign div {
+	width: 100%;
+}
+
+.dropdown {
+	margin-bottom: 30px;
+	margin-top: 15px;
+}
+
+.ui.input>input, .ui.action.input>.button {
+	margin-top: 1rem;
+}
+
+h1 {
+	font-size: 3rem;
+	margin: 0;
+}
+
+#setupQ .delete-item {
+	margin-left: 10px;
+}
+
+.q {
+	padding: 5px;
+	position: relative;
+	padding-right: 20px;
+}
+
+.q:hover,.q-active {
+	background-color: lightgrey;
+	border-radius: 3px;
+	cursor: pointer;	/*added style by Bishoy*/
+}
+
+.ui.header.q-header {
+	margin-top: 1rem;
+	width: 80%;  /* this is added by Bishoy*/
+	float: right;  /* this is added by Bishoy*/
+}
+
+.error {
+	bordder-color: red;
+}
+
+.dot-one {
+  height: 10px;
+  width: 10px;
+  background-color: black;
+  border-radius: 50%;
+	display: inline-block;
+	position: absolute;
+	right: 0;
+	top: 9px;
+}
+
+.dot {
+	font-size: 10px;
+	padding-left: 10px;
+}
+.play-section {
+	padding-top: 20px;
+	padding-bottom: 20px;
+}
+
+.play-section img {
+	height: 60px;
+}
+
+.play-section img:hover {
+	background-color: lightgrey;
+}
+
+.vjs-time-divider {
+	display: none !important;
+}
+
+.vjs-control-bar button {
+	display: none !important;
+}
+
+.vjs-duration {
+	display: none !important;
+}
+
+.hidden {
+	visibility: hidden;
+	height: 0px;
+}
+
+.eighthundred {
+	height: 20px;
+	background-color: red;
+	color: white;
+	width: 600px;
+	text-align: center;
+}
+
+.scroll-y {
+	overflow-y: auto;
+	height: 425px;
+}
+
+#play, #pause, #stop, #picture {
+	width: 60px;
+	text-align: center;
+	display: inline-block;
+}
+
+#picture {
+	width: 120px;
+}
+
+#picture img {
+	padding-left:20px;
+	padding-right: 20px;
+}
+
+#code {
+	margin: .75em;
+}
+
+.email-q {
+	padding: 0 10px;
+}
+
+.folders {
+	display: flex;
+	width: 100%;
+}
+
+.folders div {
+	flex: 1 1 60%;
+	font-size: 1.75rem;
+	line-height: 2.5rem;
+	text-align: center;
+	padding: 10px;
+	letter-spacing: 1px;
+	background-color: #f3f4f5;
+	border-bottom: 1px solid transparent;
+}
+
+.folders div.active {
+	border-bottom: 3px solid #99b3ff;
+}
+
+#recordtab {
+	border-right: 1px solid lightgrey;
+}
+
+#recordtab, #watchtab {
+	cursor: pointer;
+	display: flex;
+	justify-content: center;
+	align-content: center;
+}
+
+#myWatchVideo {
+	margin-top: 120px;
+}
+
+#watch .record-container {
+	position: relative;	
+}
+
+#watchI {
+	position: absolute;
+	top: 0;
+	left: 0;
+	width: 100%;
+}
+
+.show {
+	z-index: 10;
+}
+
+#watch .video-js .vjs-big-play-button {
+	left: 245px;
+	top: 135px;
+}
+
+.tab-img {
+	height: 29px; 
+	margin-top: 2px;
+	margin-right: 8px;
+}
+
+.date-part {
+	color: grey;
+	padding-left: 15px;
+	font-size: .9rem;
+}
+
+#watch {
+	background-color: #e6e6e6;
+	min-height: 700px;
+}
+
+.blockline-title {
+	display: block;
+}
+
+.watchv {
+	display: inline;
+}
+
+#reminder {
+	position: absolute;
+	top: 0px;
+	right: 10px;
+	letter-spacing: 1px;;
+}
+
+.modal-pad {
+	margin: 10px 0;
+}
+
+.coll {
+	position: absolute;
+    top: 22px;
+	right: 0;
+	letter-spacing: 1px;
+	max-width: 275px;
+	overflow: hidden;
+}
+
+.coll p {
+	padding: 0;
+	margin-bottom: 0;
+	margin: 5px 0;
+}
+
+.coll button {
+	background-color: green;
+	border: 0;
+	padding: 4px;
+	color: white;
+}
+
+.big-q {
+	padding-right: 260px;
+}
+
+/* #myVideoSmall {
+	margin-left: 45px;
+} */
+
+.ui.green.button {
+	width: 94px;
+	font-size: .8rem;
+}
+
+.hiddenVideo {
+	display: none;
+}
+
+
+
+
+/*added style by Bishoy*/
+
+.sidemenu {
+	width: 50%;
+	padding: 15px;
+}
+
+.quantity_bar {
+	width: 20%;
+	border-right: 3px solid #99b3ff; 
+	border-radius: 1.5px;
+	margin-right: 3px;
+}
+
+#quan_title{
+	padding: 15px 0 15px 0;
+	/*border-bottom: 2px solid lightgrey;*/
+}
+
+#quan_title p {
+	margin: 0 1.8em 0 1.6em;
+}
+
+#quan_title_border {
+	width: 70%;
+	border-bottom: 2px solid lightgrey;
+	border-radius: 1px;
+}
+
+.main_bar {
+	border-left: 3px solid #99b3ff; 
+	padding-left: 1em;
+	width: 78%;
+}
+
+#questionSection {
+	float: right;
+	width: 125%;
+}
+
+#questionSectionWatch {
+	height: auto;
+}
+
+.counter {
+	width: 10%;
+	color: #99b3ff;
+	padding: 5px;	
+}
+
+.counter:hover {
+	cursor: pointer;
+}
+
+.watch_guide {
+	text-align: -webkit-center;
+}
+
+.watch_guide span {
+	color: #99b3ff;
+}
+
+.watch_guide span:hover {
+	cursor: pointer;
+}
+
+#mainimage:hover {
+	cursor: pointer;
+}
+
+#file_date_table{
+	background-color: #f3f4f5;
+	margin-top: 1rem;
+}
+
+#watchtab:hover, #recordtab:hover {
+	cursor: pointer;
+}
