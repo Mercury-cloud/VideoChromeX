@@ -268,7 +268,7 @@ document.getElementById('pause').addEventListener('click', function(){
 
 // error handling
 player.on('deviceError', function() {
-	console.warn('device error:', player.deviceErrorCode);
+	// console.warn('device error:', player.deviceErrorCode);
 });
 
 // user clicked the record button and started recording
@@ -608,227 +608,47 @@ $(function(){
 	chrome.storage.sync.get(['questions'], function(result) {
 		items = result.questions;
 		// console.log("result------", result.questions);
-		if(!items) {
-			items = {
-				"questions": 1,
-				"users": [
-					{"name": "Mark"}
-				],
-				"selectedUser": "Mark",
-				"selectedQuestion": "this is a sample question?",
-				"beginDate": new Date().getTime() + (30 * 24 * 60 * 60 * 1000),
-				"unlocked": false,
-				"headers": ["MY BIRTH",
-				"CHILDHOOD FAVORITES",
-				"FAMILY ROOTS",
-				"EXTENDED FAMILY",
-				"FAMILY GROWING UP",
-				"GROWING UP",
-				"SCHOOL FRIENDS",
-				"THINGS GOING ON IN THE WORLD",
-				"FASHIONS OF THE DAY",
-				"THE DATING SCENE",
-				"THE LOVE OF MY LIFE",
-				"MILITARY SERVICE",
-				"STARTING A FAMILY",
-				"GRANDCHILDREN",
-				"WORK AND CAREER",
-				"SIGNIFICANT LIFE-CHANGING EVENTS IN MY LIFETIME",
-				"FAVORITE PASSIONS AND PASTIMES",
-				"PROUDEST MOMENTS AND ACCOMPLISHMENTS",
-				"BUCKET LIST",
-				"WORDS OF WISDOM",
-				"ADDITIONAL THOUGHTS"
-			 ]
-			}
-
-			chrome.storage.sync.set({"questions": items}, function() {
-				console.log('Value is set to ', items);
-			});
-
-			setNewQuestion({"MY BIRTH": {
-				"My given name is":{},
-				"My date of birth":{},
-				"Where I was born":{},
-				"My nicknames throughout the years":{},
-				"What my name means and why it was chosen":{},
-				"Where I was born":{},
-				"The US president when I was born":{},
-				"A major news event from my birth year":{},
-				"The latest advance in technology from my birth year":{}
-			}});
-			setNewQuestion({"CHILDHOOD FAVORITES": {
-				"My earliest memory":{},
-				"A story my parents used to tell me":{},
-				"Favorite food song book game toy movie TV show activity":{},
-				"A childhood experience that stands out":{}
-			}});
-			setNewQuestion({"FAMILY ROOTS": {
-				"My mothers name, birthday, where she grew up":{},
-				"My fathers name, birthday, where he grew up":{},
-				"How my parents met":{},
-				"A favorite story about my parents":{},
-				"My brother and sister name birthday description":{},
-				"My relationship with my siblings":{},
-				"A story my parents never found out about":{},
-				"A favorite adventure with my siblings":{}
-			}});
-			setNewQuestion({"EXTENDED FAMILY": {
-				"Which relatives played major roles in my life and where they lived":{},
-				"A favorite story about my relatives":{}
-			}});
-			setNewQuestion({"FAMILY GROWING UP": {
-				"This was a signature family dish":{},
-				"This was a family table conversation":{},
-				"This was a family weekend pastimes":{},
-				"This was a family memorable vacation":{},
-				"This was a family political leanings":{},
-				"This was a family religious observation":{},
-				"This was a family hot button topics":{},
-				"This was family running jokes":{},
-				"This was a family best kept secrets":{}
-			}});
-			setNewQuestion({"GROWING UP": {
-				"This was a family frequent guest":{},
-				"Where I went to school elementary middle high school college":{},
-				"A memory that sticks out":{},
-				"A person or experience that was influential":{},
-				"The best part of school":{},
-				"The toughest part of school":{},
-				"What they taught us that they dont teach now":{},
-				"A class, teacher or subject that opened my eyes":{}
-			}});
-			setNewQuestion({"SCHOOL FRIENDS": {
-				"My best friends":{},
-				"What we did for fun and hangouts":{},
-				"Teenage drama and trouble we got into":{},
-				"A memory of a childhood crush":{},
-				"Relationship’s that have continued changed or ended":{}
-			}});
-			setNewQuestion({"THINGS GOING ON IN THE WORLD": {
-				"Cultural and world events when I was growing up":{},
-				"How the world is different now":{},
-				"Things I wish we still had or did":{},
-				"Things I am glad that we have or do now":{}
-			}});
-			setNewQuestion({"FASHIONS OF THE DAY": {
-				"Clothes I wore":{},
-				"Music I liked":{},
-				"Books and magazines I read":{},
-				"Movies I saw":{},
-				"TV shows I watched":{},
-				"Hobbies interests sports I liked":{}
-			}});
-			setNewQuestion({"MILITARY SERVICE": {
-				"I probably served in this branch and unit of the military":{},
-				"The reason I chose this branch is":{},
-				"Some of the locations that I served include":{},
-				"My military duties included":{},
-				"The names of some of my fellow service members are":{},
-				"My favorite service stories include":{},
-				"My most interesting memories are":{},
-				"The most difficult memeories include":{}
-			}});
-			setNewQuestion({"THE DATING SCENE": {
-				"My first real love":{},
-				"What the dating scene was like":{},
-				"A dating experience or heartbreak I experienced":{},
-				"My funniest or most awkward dating experiences":{},
-				"Her or his name is":{}
-			}});
-			setNewQuestion({"THE LOVE OF MY LIFE": {
-				"When and where he or she was born":{},
-				"When and where he or she grew up":{},
-				"How we met?":{},
-				"Our first date":{},
-				"When and where we were married":{},
-				"About our wedding and honeymoon":{},
-				"Where we first lived":{},
-				"What we did for fun":{},
-				"A favorite story or memory about early marriage":{},
-				"Where we have traveled":{},
-				"Some thoughts on love and marriage":{},
-				"How to keep the romance alive":{}
-			}});
-			setNewQuestion({"STARTING A FAMILY": {
-				"My children names and where they were born":{},
-				"How life changed when I became a parent":{},
-				"People not related who have become part of the family":{},
-				"My favorite family tradition":{},
-				"My favorite holiday memory":{},
-				"Fun things the family loved doing together":{},
-				"What I learned from my parents about parenting":{},
-				"What I tried to do differently from my parents":{},
-				"What I hope my children learned from me":{},
-				"My childrens milestones and things I am most proud ofd":{},
-				"Memories of family outings vacations and places we went":{}
-			}});
-			setNewQuestion({"GRANDCHILDREN": {
-				"Names and when and where they were born":{},
-				"How life changed when I became a grandparent":{},
-				"The best things about having grandchildren":{},
-				"What I do differently with my grandchildren than with my children and why":{}
-			}});
-			setNewQuestion({"WORK AND CAREER": {
-				"My first job ever":{},
-				"Places I’ve worked":{},
-				"When I was a kid what I wanted to do when I grew up":{},
-				"My favorite job":{},
-				"My least favorite job":{},
-				"The worst boss I had":{},
-				"Funniest work experiences":{},
-				"If I could have any job I would do this":{},
-				"Major choices or tuning points that shaped my career":{},
-				"Some thoughts on work and what matters and what I would change":{},
-				"My first job ever":{}
-			}});
-			setNewQuestion({"SIGNIFICANT LIFE-CHANGING EVENTS IN MY LIFETIME":{
-				"Where I was and what I remember and how my outlook changed":{},
-				"Great people I met and events I was a part of":{},
-				"Significant tuning points that changed my life":{},
-				"A positive impact I made or would like to make":{}
-			}});
-			setNewQuestion({"FAVORITE PASSIONS AND PASTIMES":{
-				"Colors  indulgences  chores  foods  beverages":{},
-				"Desserts   books  songs  TV shows, movies":{},
-				"Indoor and outdoor activities   holidays   travel":{},
-				"Sports teams   heroes   historical figures":{},
-				"The best gift I ever received":{},
-				"The person I would most like to meet":{},
-				"A talent or skill I wish I had":{},
-				"The quality I admire most in a person":{},
-				"My greatest regret":{},
-				"My idea of perfect happiness":{}
-			}});
-			setNewQuestion({"PROUDEST MOMENTS AND ACCOMPLISHMENTS":{
-				"One of my most proud moments and  accomplishments":{}
-			}});
-			setNewQuestion({"BUCKET LIST": {
-				"Things I still want to do":{}
-			}});
-			setNewQuestion({"WORDS OF WISDOM": {
-				"An experience where I had to make a difficult decision and how it affected me":{},
-				"A difficult funny or embarrassing situation that gave me new perspective":{},
-				"An experience when life did not go my way and what I learned":{},
-				"The most helpful advice I have received":{},
-				"The advice I would give myself if I could go back in time":{}
-			}});
-			setNewQuestion({"ADDITIONAL THOUGHTS": {
-				"I just want to say":{}
-			}});
-
+		setPrimaryQuestion();
+		//------Trial 30 Day period------
+		var d = new Date().getTime();
+		if(d > items.beginDate && !items.unlocked){
+			$('.ui.modal.locked')
+			.modal({closable: false,
+					onApprove : function() {
+						if($('#code').val() != "Mark"){
+							return false;
+						} else {
+							items.unlocked = true;
+							chrome.storage.sync.set({"questions": items}, function() {
+								//console.log('Value is set to ', items);
+							});
+							return true;
+						}
+					}
+				})
+			.modal('show');
 		}
+		//-----------------------------
+		fillTemplate(false);//Not Menu
+		fillTemplate(true);//Menu
 		
 		
 	});
 
 
-	
-	chrome.storage.sync.get(['downloadedVideo'], function(result) {
-		downloads = result.downloadedVideo;
 
+	
+
+
+
+
+
+	chrome.storage.sync.get(['downloadedVideo'], function(result) {
+		downloads = result.downloadedVideo;		
+		// console.log("ddddddd", downloads)
 		for (var i = downloads.length - 1; i >= 0; i--) {
 			var name_split = downloads[i].split('_');
+			// console.log(name_split);
 			if(name_split.length > 1) {
 				for(var j = 0; j < name_split.length; j++){
 					name_split[j] = name_split[j].replace(/\W/g, ' ');
@@ -836,20 +656,22 @@ $(function(){
 			}
 			// console.log(name_split[2]);
 			let question_div = $('#questionSection').find('.q');
+			console.log("question_div---", question_div.length);
 			for (var k = 0; k < question_div.length; k++) {
-				// console.log(question_div[k].innerHTML.toUpperCase());
+				console.log(question_div[k].innerHTML.toUpperCase().split('<')[0] == name_split[2].toUpperCase());
 			  	if(question_div[k].innerHTML.toUpperCase().split('<')[0] == name_split[2].toUpperCase()) {
 			  		let counter_span = question_div[k].previousElementSibling.getElementsByTagName('span')[0];
 					let num = parseInt(counter_span.innerHTML);
+					console.log(num+1);
 					counter_span.innerHTML = (num + 1).toString();			  		
 			  	}
 			}
 					
 		}
-
-		if(!downloads) {
+		if(downloads == []) {
+			console.log("dcgadgad")
 			chrome.storage.sync.set({"downloadedVideo": []}, function() {
-				//console.log('Value is set to ', items);
+				console.log('Value is set to ', items);
 			});
 		}
 	});
@@ -864,33 +686,220 @@ $(function(){
 		}
 	});
 
-
-	//------Trial 30 Day period------
-	var d = new Date().getTime();
-	if(d > items.beginDate && !items.unlocked){
-		$('.ui.modal.locked')
-		.modal({closable: false,
-				onApprove : function() {
-					if($('#code').val() != "Mark"){
-						return false;
-					} else {
-						items.unlocked = true;
-						chrome.storage.sync.set({"questions": items}, function() {
-							//console.log('Value is set to ', items);
-						});
-						return true;
-					}
-				}
-			})
-		.modal('show');
-	}
-	//-----------------------------
-	fillTemplate(false);//Not Menu
-	fillTemplate(true);//Menu
-
 });
 
+let setPrimaryQuestion = ()=> {
+	if(!items) {
+		items = {
+			"questions": 1,
+			"users": [
+				{"name": "Mark"}
+			],
+			"selectedUser": "Mark",
+			"selectedQuestion": "this is a sample question?",
+			"beginDate": new Date().getTime() + (30 * 24 * 60 * 60 * 1000),
+			"unlocked": false,
+			"headers": ["MY BIRTH",
+			"CHILDHOOD FAVORITES",
+			"FAMILY ROOTS",
+			"EXTENDED FAMILY",
+			"FAMILY GROWING UP",
+			"GROWING UP",
+			"SCHOOL FRIENDS",
+			"THINGS GOING ON IN THE WORLD",
+			"FASHIONS OF THE DAY",
+			"THE DATING SCENE",
+			"THE LOVE OF MY LIFE",
+			"MILITARY SERVICE",
+			"STARTING A FAMILY",
+			"GRANDCHILDREN",
+			"WORK AND CAREER",
+			"SIGNIFICANT LIFE-CHANGING EVENTS IN MY LIFETIME",
+			"FAVORITE PASSIONS AND PASTIMES",
+			"PROUDEST MOMENTS AND ACCOMPLISHMENTS",
+			"BUCKET LIST",
+			"WORDS OF WISDOM",
+			"ADDITIONAL THOUGHTS"
+		 ]
+		}
 
+		chrome.storage.sync.set({"questions": items}, function() {
+			console.log('Value is set to ', items);
+		});
+
+		setNewQuestion({"MY BIRTH": {
+			"My given name is":{},
+			"My date of birth":{},
+			"Where I was born":{},
+			"My nicknames throughout the years":{},
+			"What my name means and why it was chosen":{},
+			"Where I was born":{},
+			"The US president when I was born":{},
+			"A major news event from my birth year":{},
+			"The latest advance in technology from my birth year":{}
+		}});
+		setNewQuestion({"CHILDHOOD FAVORITES": {
+			"My earliest memory":{},
+			"A story my parents used to tell me":{},
+			"Favorite food song book game toy movie TV show activity":{},
+			"A childhood experience that stands out":{}
+		}});
+		setNewQuestion({"FAMILY ROOTS": {
+			"My mothers name, birthday, where she grew up":{},
+			"My fathers name, birthday, where he grew up":{},
+			"How my parents met":{},
+			"A favorite story about my parents":{},
+			"My brother and sister name birthday description":{},
+			"My relationship with my siblings":{},
+			"A story my parents never found out about":{},
+			"A favorite adventure with my siblings":{}
+		}});
+		setNewQuestion({"EXTENDED FAMILY": {
+			"Which relatives played major roles in my life and where they lived":{},
+			"A favorite story about my relatives":{}
+		}});
+		setNewQuestion({"FAMILY GROWING UP": {
+			"This was a signature family dish":{},
+			"This was a family table conversation":{},
+			"This was a family weekend pastimes":{},
+			"This was a family memorable vacation":{},
+			"This was a family political leanings":{},
+			"This was a family religious observation":{},
+			"This was a family hot button topics":{},
+			"This was family running jokes":{},
+			"This was a family best kept secrets":{}
+		}});
+		setNewQuestion({"GROWING UP": {
+			"This was a family frequent guest":{},
+			"Where I went to school elementary middle high school college":{},
+			"A memory that sticks out":{},
+			"A person or experience that was influential":{},
+			"The best part of school":{},
+			"The toughest part of school":{},
+			"What they taught us that they dont teach now":{},
+			"A class, teacher or subject that opened my eyes":{}
+		}});
+		setNewQuestion({"SCHOOL FRIENDS": {
+			"My best friends":{},
+			"What we did for fun and hangouts":{},
+			"Teenage drama and trouble we got into":{},
+			"A memory of a childhood crush":{},
+			"Relationship’s that have continued changed or ended":{}
+		}});
+		setNewQuestion({"THINGS GOING ON IN THE WORLD": {
+			"Cultural and world events when I was growing up":{},
+			"How the world is different now":{},
+			"Things I wish we still had or did":{},
+			"Things I am glad that we have or do now":{}
+		}});
+		setNewQuestion({"FASHIONS OF THE DAY": {
+			"Clothes I wore":{},
+			"Music I liked":{},
+			"Books and magazines I read":{},
+			"Movies I saw":{},
+			"TV shows I watched":{},
+			"Hobbies interests sports I liked":{}
+		}});
+		setNewQuestion({"MILITARY SERVICE": {
+			"I probably served in this branch and unit of the military":{},
+			"The reason I chose this branch is":{},
+			"Some of the locations that I served include":{},
+			"My military duties included":{},
+			"The names of some of my fellow service members are":{},
+			"My favorite service stories include":{},
+			"My most interesting memories are":{},
+			"The most difficult memeories include":{}
+		}});
+		setNewQuestion({"THE DATING SCENE": {
+			"My first real love":{},
+			"What the dating scene was like":{},
+			"A dating experience or heartbreak I experienced":{},
+			"My funniest or most awkward dating experiences":{},
+			"Her or his name is":{}
+		}});
+		setNewQuestion({"THE LOVE OF MY LIFE": {
+			"When and where he or she was born":{},
+			"When and where he or she grew up":{},
+			"How we met?":{},
+			"Our first date":{},
+			"When and where we were married":{},
+			"About our wedding and honeymoon":{},
+			"Where we first lived":{},
+			"What we did for fun":{},
+			"A favorite story or memory about early marriage":{},
+			"Where we have traveled":{},
+			"Some thoughts on love and marriage":{},
+			"How to keep the romance alive":{}
+		}});
+		setNewQuestion({"STARTING A FAMILY": {
+			"My children names and where they were born":{},
+			"How life changed when I became a parent":{},
+			"People not related who have become part of the family":{},
+			"My favorite family tradition":{},
+			"My favorite holiday memory":{},
+			"Fun things the family loved doing together":{},
+			"What I learned from my parents about parenting":{},
+			"What I tried to do differently from my parents":{},
+			"What I hope my children learned from me":{},
+			"My childrens milestones and things I am most proud ofd":{},
+			"Memories of family outings vacations and places we went":{}
+		}});
+		setNewQuestion({"GRANDCHILDREN": {
+			"Names and when and where they were born":{},
+			"How life changed when I became a grandparent":{},
+			"The best things about having grandchildren":{},
+			"What I do differently with my grandchildren than with my children and why":{}
+		}});
+		setNewQuestion({"WORK AND CAREER": {
+			"My first job ever":{},
+			"Places I’ve worked":{},
+			"When I was a kid what I wanted to do when I grew up":{},
+			"My favorite job":{},
+			"My least favorite job":{},
+			"The worst boss I had":{},
+			"Funniest work experiences":{},
+			"If I could have any job I would do this":{},
+			"Major choices or tuning points that shaped my career":{},
+			"Some thoughts on work and what matters and what I would change":{},
+			"My first job ever":{}
+		}});
+		setNewQuestion({"SIGNIFICANT LIFE-CHANGING EVENTS IN MY LIFETIME":{
+			"Where I was and what I remember and how my outlook changed":{},
+			"Great people I met and events I was a part of":{},
+			"Significant tuning points that changed my life":{},
+			"A positive impact I made or would like to make":{}
+		}});
+		setNewQuestion({"FAVORITE PASSIONS AND PASTIMES":{
+			"Colors  indulgences  chores  foods  beverages":{},
+			"Desserts   books  songs  TV shows, movies":{},
+			"Indoor and outdoor activities   holidays   travel":{},
+			"Sports teams   heroes   historical figures":{},
+			"The best gift I ever received":{},
+			"The person I would most like to meet":{},
+			"A talent or skill I wish I had":{},
+			"The quality I admire most in a person":{},
+			"My greatest regret":{},
+			"My idea of perfect happiness":{}
+		}});
+		setNewQuestion({"PROUDEST MOMENTS AND ACCOMPLISHMENTS":{
+			"One of my most proud moments and  accomplishments":{}
+		}});
+		setNewQuestion({"BUCKET LIST": {
+			"Things I still want to do":{}
+		}});
+		setNewQuestion({"WORDS OF WISDOM": {
+			"An experience where I had to make a difficult decision and how it affected me":{},
+			"A difficult funny or embarrassing situation that gave me new perspective":{},
+			"An experience when life did not go my way and what I learned":{},
+			"The most helpful advice I have received":{},
+			"The advice I would give myself if I could go back in time":{}
+		}});
+		setNewQuestion({"ADDITIONAL THOUGHTS": {
+			"I just want to say":{}
+		}});
+	}
+
+}
 
 function setNewQuestion(headerObj) {
 	chrome.storage.sync.set(headerObj, function() {
