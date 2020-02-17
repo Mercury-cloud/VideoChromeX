@@ -185,17 +185,17 @@ h1 {
 	background-color: lightgrey;
 }
 
-.vjs-time-divider {
+/*.vjs-time-divider {
 	display: none !important;
-}
+}*/
 
 .vjs-control-bar button {
 	display: none !important;
 }
 
-.vjs-duration {
+/*.vjs-duration {
 	display: none !important;
-}
+}*/
 
 .hidden {
 	visibility: hidden;
@@ -206,7 +206,7 @@ h1 {
 	height: 20px;
 	background-color: red;
 	color: white;
-	width: 600px;
+	width: 720px;
 	text-align: center;
 }
 
@@ -289,8 +289,8 @@ h1 {
 }
 
 #watch .video-js .vjs-big-play-button {
-	left: 245px;
-	top: 135px;
+	left: 44%;
+	top: 45%;
 }
 
 .tab-img {
@@ -409,6 +409,7 @@ h1 {
 #questionSection {
 	float: right;
 	width: 125%;
+	height: 480px;
 }
 
 #questionSectionWatch {

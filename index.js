@@ -2,43 +2,20 @@ var downloadTime = [];
 
 var options = {
 	controls: true,
-	width: 600,
-	height: 339,
-	controlBar: {
-			volumePanel: false
-	},
+	width: 720,
+	height: 420,
+	fluid: false,
+	
 	plugins: {
-			record: {
-					audio: true,
-					//controls: true,
-					video: {
-						// video constraints: set resolution of camera
-						mandatory: {
-								minWidth: 1280, 
-								minHeight: 720,
-						},
-						
-					},
-					// dimensions of captured video frames
-					frameWidth: 1280,
-					frameHeight: 720,
-					maxLength: 7200,
-					videoMimeType:"video/webm;codecs=H264",
-					debug: true
-			}
+		record: {
+			audio: true,
+			video: true,
+			maxLength: 7200,
+			videoMimeType:"video/webm;codecs=H264",
+			debug: true
+		}
 	}
 };
-
-var hidden = true;
-document.getElementById('call').addEventListener('click', function() {
-	if(hidden) {
-		document.getElementById('myVideoSmall').className = 'video-js vjs-default-skin';
-		hidden = false;
-	} else {
-		document.getElementById('myVideoSmall').className = 'hiddenVideo';
-		hidden = true;
-	}
-})
 
 var optionsSmall = {
 	controls: true,
@@ -71,11 +48,8 @@ var optionsSmall = {
 
 var watchoptions = {
 	controls: true,
-	width: 600,
-	height: 339,
-	controlBar: {
-			volumePanel: false
-	}
+	width: 720,
+	height: 420,
 };
 
 
@@ -100,386 +74,31 @@ var picture = videojs("myPicture", optionsCamera, function(){
 	console.log("initilized picture taker");
 });
 
-
-var player = videojs("myVideo", options, function(){
-	// print version information at startup
-	var msg = 'Using video.js ' + videojs.VERSION +
-			' with videojs-record ' + videojs.getPluginVersion('record') +
-			' and recordrtc ' + RecordRTC.version;
-	videojs.log(msg);
-	$('.vjs-record').click();
+var player = videojs('myVideo', options, function() {
+    // print version information at startup
+    var msg = 'Using video.js ' + videojs.VERSION +
+        ' with videojs-record ' + videojs.getPluginVersion('record') +
+        ' and recordrtc ' + RecordRTC.version;
+    videojs.log(msg);
+    $('.vjs-record').click();
 });
 
-var player = videojs("myVideoSmall", optionsSmall, function(){
+var playerSmall = videojs("myVideoSmall", optionsSmall, function(){
 	// print version information at startup
 	var msg = 'Using video.js ' + videojs.VERSION +
 			' with videojs-record ' + videojs.getPluginVersion('record') +
 			' and recordrtc ' + RecordRTC.version;
 	videojs.log(msg);
-	//$('.vjs-record').click();
+	// $('.vjs-record').click();
 });
 
 var wplayer = videojs("myWatchVideo", watchoptions, () => {
-	// print version information at startup
-	// var msg = 'Using video.js ' + videojs.VERSION +
-	// 		' with videojs-record ' + videojs.getPluginVersion('record') +
-	// 		' and recordrtc ' + RecordRTC.version;
-	//videojs.log(msg);
-	//$('.vjs-record').click();
-
-
-	// var xhr = new XMLHttpRequest();
-	// xhr.responseType = "blob";
-	// xhr.onload = function () {
-	// 	//var json = JSON.parse(xhr.responseText);
-	// 	//console.log(json);
-	// 	var a = URL.createObjectURL(xhr.response);
-
-	// 	wplayer.src({type:"video/webm", src: a});
-	// }
-	// xhr.open("GET", 'file:///Users/tz7hll/Downloads/videorecordmylife/seth-my-birth-a-major-news-event-from-my-birth-year-mark-answered-1%20(1).webm');
-	// xhr.send();
-
-
-
-	//var a = URL.createObjectURL('blob:chrome-extension://fglmchfpfmcbeaiopebfblfgpcogbojb/525d3ec9-249a-401c-862c-9b0fd5e2639c');
-	//console.log('blob', a);
-	//wplayer.src({type:"video/webm", src: URL.createObjectURL('blob:chrome-extension://fglmchfpfmcbeaiopebfblfgpcogbojb/525d3ec9-249a-401c-862c-9b0fd5e2639c')});
-});
-
-
-$('#recordtab').click(() => {
-	document.getElementById('watch').classList = 'hidden';
-	document.getElementById('record').classList = 'content';
-	document.getElementById('recordtab').classList = 'active';
-	document.getElementById('watchtab').classList = '';
 
 });
 
-$('#watchtab').click(() => {
-		
-	$('.q-active').siblings('.photo_count').click();
-
-});
-
-$('#play').click(() => {
-	if(player.record().isRecording()) {
-		player.record().resume();
-	} else {
-		player.record().start();
-	}
-	$("#eighthundred").attr('class', 'eighthundred');
-	$('#play').attr('class', 'hidden');
-	$('#stop').attr('class', '');
-	$('#pause').attr('class', '');
-});
-
-$('#stop').click(() => {
-	player.record().stop();
-	$("#eighthundred").attr('class', 'hidden');
-	$('#play').attr('class', '');
-	$('#stop').attr('class', 'hidden');
-	$('#pause').attr('class', 'hidden');
-});
-
-$('#pause').click(() => {
-	player.record().pause();
-	$("#eighthundred").attr('class', 'hidden');
-	$('#play').attr('class', '');
-	$('#stop').attr('class', '');
-	$('#pause').attr('class', 'hidden');
-});
-
-// error handling
-player.on('deviceError', function() {
-	console.warn('device error:', player.deviceErrorCode);
-});
-
-// user clicked the record button and started recording
-player.on('startRecord', function() {
-	//console.log('started recording!');
-});
 
 
 
-// chrome.runtime.onMessage.addListener(
-// //   function(request, sender, sendResponse) {
-// // 	chrome.storage.sync.get(['downloadedVideo'], function(result) {
-// // 		downloads = result.downloadedVideo;
-// // 		console.log('downloads', result);
-// // 		console.log('downloads-----', request);
-// // 		if(!downloads) {
-// // 			chrome.storage.sync.set({"downloadedVideo": []}, function() {
-// // 				//console.log('Value is set to ', items);
-// // 			});
-// // 			chrome.storage.sync.set({"downloadedVideosTime": []}, function() {
-// // 				//console.log('Value is set to ', items);
-// // 			});
-// // 		}
-// // 	})
-// // 	console.log("From background", request.greeting);
-// // 	var watchList = document.getElementById('questionSectionWatch');
-	
-// // 	watchList.innerHTML = '';
-
-// // 	if(request.greeting.watchvideos) {
-
-// // 		for(var i = 0; i < request.greeting.watchvideos.length; i++) {
-// // 			if(request.greeting.watchvideos[i].filename.indexOf('Downloads') != -1){
-// // 				dPath = request.greeting.watchvideos[i].filename.split('Downloads')[0];
-// // 			}
-// // 		}
-// // 		console.log('dpath', dPath);
-// // 		//console.log('here in results from watfch');
-// // 		var usersArray = [];
-// // 		var usersObj = {};
-// // 		var userdropdown = [];
-// // 		//console.log('length', request.greeting.watchvideos);
-// // 		for(var i =0; i < downloads.length; i++){
-// // 			//console.log(i);
-// // 			// if(request.greeting.watchvideos[i].filename.indexOf('videorecordmylife') != -1 && request.greeting.watchvideos[i].exists) {
-// // 				//console.log(request.greeting.watchvideos[i].filename);
-// // 				//var parts = request.greeting.watchvideos[i].filename.split("/");
-// // 				//var result = parts[parts.length - 1];
-// // 				var result = downloads[i];
-// // 				// console.log("result-", result);
-// // 				// var endpart = result.split('.');
-// // 				// var goodpart = endpart[0];
-// // 				//console.log(request.greeting.watchvideos[i].filename, parts, result);
-// // 				var splitName = result.split('_');
-// // 				if(splitName.length > 1) {
-// // 					for(var j = 0; j < splitName.length; j++){
-// // 						splitName[j] = splitName[j].replace(/\W/g, ' ');
-// // 						// splitName[j] = titleCase(splitName[j]);
-// // 					}
-
-// // 					//Users in dropdown
-// // 					console.log('splitName', splitName);
-// // 					if(!usersObj[splitName[0]]){
-// // 						usersObj[splitName[0]] = {};
-// // 						usersArray.push(splitName[0]);
-// // 						userdropdown.push({name: splitName[0], value: splitName[0], text: splitName[0]});
-// // 					// 	var name = document.createElement('div');
-// // 					// 	var textnode = document.createTextNode(splitName[0]);
-// // 					// 	name.setAttribute("id", splitName[0]);
-// // 					// 	name.setAttribute("value", splitName[0]);
-// // 					// 	name.appendChild(textnode); 
-// // 					// 	document.getElementById('questionSectionWatch').appendChild(name);
-// // 					}
-
-// // 					// var idn = splitName[0].replace(/\s+/g, '-') + splitName[1].replace(/\s+/g, '-');
-// // 					// if(idn[idn.length] == '-') {
-// // 					// 	idn = idn.splice(-1,1);
-// // 					// }
-// // 					// console.log("idn------------", idn);
-
-// // 					// //Header section nested in section element
-// // 					// if(!usersObj[splitName[0]][splitName[1]]){
-// // 					// 	usersObj[splitName[0]][splitName[1]] = {};
-// // 					// 	//console.log(splitName[1]);
-// // 					// 	var header = document.createElement('section');
-// // 					// 	var addDiv = document.createElement('div');
-// // 					// 	var textnode = document.createTextNode(splitName[1]);         // Create a text node
-// // 					// 	header.appendChild(addDiv);
-// // 					// 	addDiv.appendChild(textnode);
-// // 					// 	addDiv.setAttribute('class', 'ui block header q-header');
-// // 					// 	header.setAttribute('id',idn);  
-// // 					// 	header.setAttribute('data',splitName[0].toLowerCase());                           // Append the text to <li>
-// // 					// 	if(!$('#' + idn).length){
-// // 					// 		watchList.appendChild(header);
-// // 					// 	}
-// // 					// }
-
-// // 					// splitName[2] = splitName[2].replace(/^\s+|\s+$/g,'');
-// // 					// console.log('splitName[2]', splitName[2])
-
-// // 					// if(!usersObj[splitName[0]][splitName[1]][splitName[2]]){
-// // 					// 	console.log('here 3');
-// // 					// 	usersObj[splitName[0]][splitName[1]][splitName[2]] = [];
-// // 					// 	//console.log(splitName[2]);
-// // 					// 	var addDiv = document.createElement('div');
-// // 					// 	var titleDiv = document.createElement('div');
-// // 					// 	titleDiv.setAttribute('class', 'blockline-title');
-// // 					// 	var textnode = document.createTextNode(splitName[2]);         // Create a text node
-// // 					// 	addDiv.appendChild(titleDiv);
-// // 					// 	titleDiv.appendChild(textnode);
-// // 					// 	//addDiv.setAttribute('class', 'ui block header q-header');
-// // 					// 	var idm = splitName[2].replace(/\s+/g, '-');
-// // 					// 	if(idm[idm.length] == '-') {
-// // 					// 		idm = idm.substring(0,idm.length - 1);
-// // 					// 	}
-// // 					// 	addDiv.setAttribute('id',idm);
-// // 					// 	console.log("idm---------", idm);
-
-// // 					// 	if(!$('#' + idm).length){
-// // 					// 		document.getElementById(idn).appendChild(addDiv);
-// // 					// 	}
-// // 					// }
-
-// // 					// if(downloadTime && downloadTime.length){
-// // 					// 	date = downloadTime[i];//new Date(request.greeting.watchvideos[i].endTime);
-// // 					// }
-// // 					//date = date.toLocaleString();
-// // 					//var urlLinkData = request.greeting.watchvideos[i].filename;
-// // 					var _d = splitName[3].split(' ');
-// // 					var date = _d[1] + '/' + _d[2] + '/' + _d[3] + ' ' + _d[5] + ':' + _d[6] + ':' + _d[7] + ' ' + _d[8];
-// // 					// if(downloads[i].indexOf('png') != -1) {
-// // 					// 	titleLink = 'Image';
-// // 					// }                // Create a <li> node
-// // 					// var textnode = document.createTextNode(result);         // Create a text node
-// // 					// var datenode = document.createTextNode(date);//.toDateString());
-// // 					var nodeD = $('<i></i>').attr('class', 'date-part').html(date); //document.createElement("i");  
-// // 					// var br = document.createElement('br');                // Create a <li> node
-// // 					// nodeD.setAttribute('class', 'date-part');
-// // 					var node = $('<div></div>').html(result)
-// // 												.attr({'class': 'q watchv', 'data-link': dPath + 'Downloads/videorecordmylife/' + downloads[i]});
-// // 					// nodeD;
-// // 					// node.setAttribute('class', 'q watchv');
-// // 					// node.setAttribute('data-link', dPath + 'Downloads/videorecordmylife/' + downloads[i]);
-// // 					// console.log(node, "dddddddddd", nodeD);
-// // 					var new_table_row = $('<tr></tr>');
-// // 					var new_table_cell = $('<td></td>').append(node);
-// // 					new_table_row.append($('<td></td>').append(node));
-// // 					new_table_row.append($('<td></td>').append(nodeD));
-// // 					$('.file_table_body').append(new_table_row);
-// // 					//console.log('below',splitName[2].replace(/\s+/g, '-'));
-// // 					// var q = splitName[2].replace(/\s+/g, '-');
-// // 					// if(q[q.length - 1] == '-'){
-// // 					// 	q = q.substring(0,q.length - 1);
-// // 					// }
-// // 					// console.log('q',q);
-// // 					// // console.log(document.getElementById(q + '-'));
-// // 					// //q = q + '-';
-// // 					// if(document.getElementById(q)){
-// // 					// 	document.getElementById(q).append(node);
-// // 					// 	if(date){
-// // 					// 		document.getElementById(q).append(nodeD);
-// // 					// 	}
-// // 					// 	document.getElementById(q).append(br);
-// // 					// }
-// // 					// console.log('userobj', usersObj);
-// // 				}
-// // 		}
-// // 		console.log('users', usersArray);
-// // 		$('.watchuserdropdown').dropdown({
-// // 			ignoreCase: true,
-// // 			values: userdropdown,
-// // 			action: 'activate',
-// // 			onChange: function(value) {
-// // 				if(value){
-// // 					console.log('change', value);
-// // 					$('section:not([data="' + value.toLowerCase() + '"])').hide();
-// // 					$('[data="' + value.toLowerCase() + '"]').show();
-// // 				}
-// // 			}
-// // 		}); 
-// // 		if(userdropdown && userdropdown.length && userdropdown[0].name){
-// // 			$('.watchuserdropdown').dropdown('set selected', userdropdown[0].name);
-// // 		}
-		
-// // 	}
-// //  });
-
-//   function titleCase(str) {
-// 	var splitStr = str.toLowerCase().split(' ');
-// 	for (var i = 0; i < splitStr.length; i++) {
-// 		// You do not need to check if i is larger than splitStr length, as your for does that for you
-// 		// Assign it back to the array
-// 		splitStr[i] = splitStr[i].charAt(0).toUpperCase() + splitStr[i].substring(1);     
-// 	}
-// 	// Directly return the joined string
-// 	return splitStr.join(' '); 
-//  }
-
-
-// user completed recording and stream is available
-player.on('finishRecord', function() {
-	// the blob object contains the recorded data that
-	// can be downloaded by the user, stored on server etc.
-	console.log('finished recording: ', player.recordedData);
-	console.log(player.recordedData);
-
-	var user = items.selectedUser ? items.selectedUser.replace(/[\W_]+/g, '-').toLowerCase() : "user";
-	var header = items.selectedQHeader ? items.selectedQHeader.replace(/[\W_]+/g, '-').toLowerCase() : "header";
-	var question;
-	if(items.selectedQuestion) {
-		console.log('a ', items.selectedQuestion);
-		var a = items.selectedQuestion.split('(');
-		question = a[0].replace(/[\W_]+/g, '-').toLowerCase();
-		console.log(question);
-	} else {
-		question = 'question';
-	}
-	var dataURL = URL.createObjectURL(player.recordedData.video);
-
-	var filename = user + "_" + header + "_" + question;
-	var filenameValid = filename.replace(/\W/g, '-');
-	var increment = "1";
-	chrome.storage.sync.get(items.selectedQHeader, function(result) {
-		console.log("Check user increment", result);
-		if(result[items.selectedQHeader] && result[items.selectedQHeader][items.selectedQuestion] && result[items.selectedQHeader][items.selectedQuestion][items.selectedUser]){
-			console.log("have one");
-			increment = result[items.selectedQHeader][items.selectedQuestion][items.selectedUser];
-		}
-
-		filenameValid = filenameValid + '_Video-' + new Date().toLocaleString().replace(/\W/g, '-');
-
-
-		chrome.runtime.sendMessage({greeting: {"data": dataURL, "name": filenameValid + "_.webm"}}, function(response) {
-			console.log('first-response----------', response);
-			//Setup for next recording
-			$('.vjs-record').click();
-		});
-
-		downloads.push(filenameValid + '_.webm');
-		chrome.storage.sync.set({"downloadedVideo": downloads}, function() {
-			//console.log('Value is set to ', items);
-		});
-		downloadTime.push(new Date().toLocaleString());
-		chrome.storage.sync.set({"downloadedVideosTime": downloadTime}, function() {
-			//console.log('Value is set to ', items);
-		});
-	});
-
-	console.log("h q u", header,question,user);
-	if(header != "header" && question != "question" && user != "user"){
-		chrome.storage.sync.get(items.selectedQHeader, function(result) {
-			if(result[items.selectedQHeader] && result[items.selectedQHeader][items.selectedQuestion] && result[items.selectedQHeader][items.selectedQuestion][items.selectedUser]){
-				result[items.selectedQHeader][items.selectedQuestion][items.selectedUser] = result[items.selectedQHeader][items.selectedQuestion][items.selectedUser] + 1;
-			} else if (result[items.selectedQHeader] && result[items.selectedQHeader][items.selectedQuestion]){
-				console.log("here to add increment");
-				result[items.selectedQHeader][items.selectedQuestion][items.selectedUser] = 1;
-			}
-			console.log("saving result", result);
-			chrome.storage.sync.set(result, function(){
-				fillTemplate(false);
-				fillTemplate(true);
-			});
-		});
-	}
-});
-
-$("#settings").click(function() {
-  $('.ui.modal.settings')
-  .modal('show');
-});
-
-$("#reminder").click(function() {
-	$('.ui.modal.reminder')
-	.modal('show');
- });
-
-
-var items = {};
-
-if(!items) {
-	items = {
-	"headers": [],
-	"questions": [],
-	"users": ["Default"],
-	selectedUser: "Default"
-	};
-}
 //------Format-----
 //var downloads = [];
 // chrome.storage.sync.get(['downloads'], function(result) {
@@ -493,13 +112,19 @@ if(!items) {
 // 		});
 // 	}
 // })
+
+
+let hidden = true;
+let items = {};
 let downloads = [];
+let firstChange = true;
+
 
 // functionality changed by Bishoy
 // When the document is ready, start
 $(() => {
 	
-	
+
 	chrome.storage.sync.get(['questions'], function(result) {
 		items = result.questions;
 		// console.log("result------", result.questions);
@@ -512,25 +137,68 @@ $(() => {
 		setPrimaryDownloadData() //set downloads
 		// ----------Camera functions------
 		imageCaptureCallbacks();
+		videoRecordCallbacks();
 
 		// -------Show DownloadsCount-------
 		showDownloadedVideosCount();
-
-		
 		
 	});
 
+	settingCallback();
+	reminderCallback();
+	callfunctionality();
+
 	imagechangeCallbacks();
-	
-
 	addItemCallback();
-
-
-	
-
-	
+	switchTabFunctions();
 
 });
+
+let callfunctionality = () => {
+
+	$('#call').click(() => {
+		console.log("call clicked")
+		if(hidden) {
+			document.getElementById('myVideoSmall').className = 'video-js vjs-default-skin';
+			hidden = false;
+		} else {
+			document.getElementById('myVideoSmall').className = 'hiddenVideo';
+			hidden = true;
+		}
+	});
+}
+
+let switchTabFunctions = () => {
+
+	$('#recordtab').click(() => {
+		document.getElementById('watch').classList = 'hidden';
+		document.getElementById('record').classList = 'content';
+		document.getElementById('recordtab').classList = 'active';
+		document.getElementById('watchtab').classList = '';
+
+	});
+
+	$('#watchtab').click(() => {
+		$('.vjs-control-bar').css('display', 'none');
+		$('.q-active').siblings('.photo_count').click();
+	});
+}
+
+let settingCallback = () => {
+
+	$("#settings").click(function() {
+	  $('.ui.modal.settings')
+	  .modal('show');
+	});
+}
+
+let reminderCallback = () => {
+
+	$("#reminder").click(function() {
+		$('.ui.modal.reminder')
+		.modal('show');
+	 });
+}
 
 // when you click the photo or upload photo button in setup modal, you can select another photo
 let imagechangeCallbacks = () => {
@@ -605,6 +273,105 @@ let imageCaptureCallbacks = () => {
 		
 	});
 }
+
+
+
+let videoRecordCallbacks = () => {
+	// console.log(player)
+	
+	$('#play').click(() => {
+		if(player.record().isRecording()) {
+			player.record().resume();
+		} else {
+			player.record().start();
+			console.log('started--------');
+		}
+		$("#eighthundred").attr('class', 'eighthundred');
+		$('#play').attr('class', 'hidden');
+		$('#stop').attr('class', '');
+		$('#pause').attr('class', '');
+	});
+
+	$('#stop').click(() => {
+		player.record().stop();		
+		// player.play().stop();
+		$("#eighthundred").attr('class', 'hidden');
+		$('#play').attr('class', '');
+		$('#stop').attr('class', 'hidden');
+		$('#pause').attr('class', 'hidden');
+	});
+
+	$('#pause').click(() => {
+		player.record().pause();
+		$("#eighthundred").attr('class', 'hidden');
+		$('#play').attr('class', '');
+		$('#stop').attr('class', '');
+		$('#pause').attr('class', 'hidden');
+	});
+	// error handling
+	player.on('deviceError', function() {
+		console.warn('device error:', player.deviceErrorCode);
+	});
+
+	// user clicked the record button and started recording
+	player.on('startRecord', function() {
+		console.log('started recording!');
+	});
+
+
+	// user completed recording and stream is available
+	player.on('finishRecord', function() {
+		// the blob object contains the recorded data that
+		// can be downloaded by the user, stored on server etc.
+		console.log('finished recording: ', player.recordedData);
+		console.log(player.recordedData);
+
+		var user = items.selectedUser ? items.selectedUser.replace(/[\W_]+/g, '-').toLowerCase() : "user";
+		var header = items.selectedQHeader ? items.selectedQHeader.replace(/[\W_]+/g, '-').toLowerCase() : "header";
+		var question;
+		if(items.selectedQuestion) {
+			console.log('a ', items.selectedQuestion);
+			var a = items.selectedQuestion.split(' (');
+			question = a[0].replace(/[\W_]+/g, '-').toLowerCase();
+			console.log(question);
+		} else {
+			question = 'question';
+		}
+		var dataURL = URL.createObjectURL(player.recordedData.video);
+
+		var filename = user + "_" + header + "_" + question;
+		var filenameValid = filename.replace(/\W/g, '-');
+		var increment = "1";
+		chrome.storage.sync.get(items.selectedQHeader, function(result) {
+			console.log("Check user increment", result);
+			if(result[items.selectedQHeader] && result[items.selectedQHeader][items.selectedQuestion] && result[items.selectedQHeader][items.selectedQuestion][items.selectedUser]){
+				console.log("have one");
+				increment = result[items.selectedQHeader][items.selectedQuestion][items.selectedUser];
+			}
+
+			filenameValid = filenameValid + '_Video-' + new Date().toLocaleString().replace(/\W/g, '-');
+
+
+			chrome.runtime.sendMessage({greeting: {"data": dataURL, "name": filenameValid + "_.webm"}}, function(response) {
+				console.log('first-response----------', response);
+				//Setup for next recording
+				$('.vjs-record').click();
+			});
+			downloads.push(filenameValid + '_.webm');
+			increaseIndividualCounter(filenameValid + '_.webm');
+			// console.log("downloads---", downloads);
+			chrome.storage.sync.set({"downloadedVideo": downloads}, function() {
+				//console.log('Value is set to ', items);				
+			});
+			downloadTime.push(new Date().toLocaleString());
+			chrome.storage.sync.set({"downloadedVideosTime": downloadTime}, function() {
+				//console.log('Value is set to ', items);
+			});
+		});
+	});
+
+}
+
 
 let addItemCallback = () => {
 	$('.add-item').click(function(e){
@@ -891,8 +658,6 @@ let try30Period = () => {
 }
 
 //Fill both Setup/Main Screen with questions
-let firstChange = true;
-
 let fillTemplate = (isMenu) => {
 	var qhObj = isMenu ? "#question-header-setup" : "#question-header";
 	var qhCont = isMenu ? "setupQH" : "questionSection";
@@ -1124,7 +889,7 @@ function clickCounter(){
 		$(this).siblings('div.q').addClass('q-active');
 		items.selectedQuestion = $(this).siblings('div.q').html();
 		items.selectedQHeader = $(this).siblings('div.q')[0].parentElement.parentElement.id;
-		console.log("---------", items.selectedQuestion);
+		// console.log("---------", items.selectedQuestion);
 		var category_txt = $(this).parent().parent().prev().html();
 		// console.log($(this));
 		$('.watch_guide span').html('VIEW ALL ' + category_txt + ' PHOTOS/VIDEOS');
@@ -1201,7 +966,7 @@ let showDownloadedVideosCount = () => {
 
 let increaseIndividualCounter = (downloadData) => {
 	var name_split = downloadData.split('_');
-	// console.log(name_split);
+	// console.log('name_split---', name_split);
 	if(name_split.length > 1) {
 		for(var j = 0; j < name_split.length; j++){
 			name_split[j] = name_split[j].replace(/\W/g, ' ');
@@ -1213,7 +978,15 @@ let increaseIndividualCounter = (downloadData) => {
 	for (var k = 0; k < question_div.length; k++) {
 		// console.log(question_div[k].innerHTML.toUpperCase().split('<')[0] == name_split[2].toUpperCase());
 	  	if(question_div[k].innerHTML.toUpperCase().split('<')[0] == name_split[2].toUpperCase()) {
-	  		let counter_span = question_div[k].previousElementSibling.getElementsByTagName('span')[0];
+	  		let counter_span;
+	  		// console.log(name_split[4] == ' png');
+	  		if(name_split[4] == ' png'){
+		  		counter_span = question_div[k].previousElementSibling.getElementsByTagName('span')[0];
+	  		}
+		  	else{
+		  		counter_span = question_div[k].previousElementSibling.previousElementSibling.getElementsByTagName('span')[0];
+		  	}
+		  	// console.log('counter_span---', counter_span);
 			let num = parseInt(counter_span.innerHTML);
 			// console.log(num+1);
 			counter_span.innerHTML = (num + 1).toString();			  		

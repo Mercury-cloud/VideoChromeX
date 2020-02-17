@@ -7,7 +7,7 @@ chrome.browserAction.onClicked.addListener(function(tab) {
 
 chrome.runtime.onMessage.addListener(
   function(request, sender, sendResponse) {
-		// console.log("hello", request.greeting.data, request.greeting.name);
+		console.log("hello", request.greeting.data, request.greeting.name);
 		if(request.greeting.name){
 			chrome.downloads.download({
 					url:      request.greeting.data,
