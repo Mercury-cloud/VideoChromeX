@@ -564,7 +564,7 @@ let imageCaptureCallbacks = () => {
 		$('.vjs-camera-button').click();
 	});
 	picture.on('finishRecord', function() {
-		console.log("captured image", downloads);
+		// console.log("captured image", downloads);
 			// the blob object contains the recorded data that
 		// can be downloaded by the user, stored on server etc.
 
@@ -574,10 +574,10 @@ let imageCaptureCallbacks = () => {
 		var question;
 		console.log("selectedQuestion----", items.selectedQuestion);
 		if(items.selectedQuestion) {
-			console.log('a ', items.selectedQuestion);
+			// console.log('a ', items.selectedQuestion);
 			var a = items.selectedQuestion.split(' (');
 			question = a[0].replace(/[\W_]+/g, '-').toLowerCase();
-			console.log(question);
+			// console.log(question);
 		} else {
 			// window.alert("No question selected. please choose your question.");
 			question = 'question';
@@ -611,21 +611,7 @@ let imageCaptureCallbacks = () => {
 			});
 
 		});
-
-		// if(header != "header" && question != "question" && user != "user"){
-
-		// 	// chrome.storage.sync.get(items.selectedQHeader, function(result) {
-		// 	// 	if(result[items.selectedQHeader] && result[items.selectedQHeader][items.selectedQuestion] && result[items.selectedQHeader][items.selectedQuestion][items.selectedUser]){
-		// 	// 		result[items.selectedQHeader][items.selectedQuestion][items.selectedUser] = result[items.selectedQHeader][items.selectedQuestion][items.selectedUser] + 1;
-		// 	// 	} else if (result[items.selectedQHeader] && result[items.selectedQHeader][items.selectedQuestion]){
-		// 	// 		console.log("here to add increment");
-		// 	// 		result[items.selectedQHeader][items.selectedQuestion][items.selectedUser] = 1;
-		// 	// 	}
-		// 	// 	console.log(result);
-		// 	// 	chrome.storage.sync.set(result);
-		// 	// });
-		// 	// fillTemplate(false);
-		// }
+		
 	});
 }
 
@@ -1032,7 +1018,7 @@ let fillTemplate = (isMenu) => {
 let setPrimaryDownloadData = () => {
 	chrome.storage.sync.get(['downloadedVideo'], function(result) {
 		downloads = result.downloadedVideo;
-		console.log('downloads----------', result.downloadedVideo);
+		// console.log('downloads----------', result.downloadedVideo);
 		if(!downloads) {
 			// console.log('dddddddddddddddddddd');
 			chrome.storage.sync.set({"downloadedVideo": []}, function() {
@@ -1162,49 +1148,20 @@ function clickCounter(){
 		$('.watchuserdropdown .text').html($('.selected_user .text').html());
 		// console.log("counter click----")
 
-		// for (var i = 0; i < downloads.length; i++) {
-		// 	let name_split = downloads[i].split('_');
-		// 	let temp = name_split[2].split('-');
-		// 	name_split[2] = temp.join(' ');
-		// 	// console.log("name_split2m----", name_split[2])
-		// 	// console.log("qeustion_div----", question_div.html())
-		// 	// console.log("comparison-----", name_split[2] == question_div.html().toLowerCase())
-		// 	if (name_split[2] == question_div.html().toLowerCase()) {
-
-				
-		// 		let _d = name_split[3].split(' ');
-		// 		// let date = _d[1] + '/' + _d[2] + '/' + _d[3] + ' ' + _d[5] + ':' + _d[6] + ':' + _d[7] + ' ' + _d[8];
-		// 		let nodeD = $('<i></i>').attr('class', 'date-part').html(downloadTime[i]); //document.createElement("i");  
-		// 		let node = $('<div></div>').html(downloads[i])
-		// 									.attr({'class': 'q watchv', 'data-link': dPath + 'Downloads/videorecordmylife/' + downloads[i]});
-		// 		let new_table_row = $('<tr></tr>');
-		// 		let new_table_cell = $('<td></td>').append(node);
-		// 		new_table_row.append($('<td></td>').append(node));
-		// 		new_table_row.append($('<td></td>').append(nodeD));
-		// 		$('.file_table_body').append(new_table_row);
-		// 	}
-			
-		// }
-
 		chrome.runtime.sendMessage({greeting: 'getvideos'}, function(response) {
 			// console.log("getvidoes response------", response);
-			console.log('length', response.greeting);
+			// console.log('length', response.greeting);
 			let linkPath = response.greeting;
 			for (var i = 0; i < downloads.length; i++) {
 				let name_split = downloads[i].split('_');
 				let temp = name_split[2].split('-');
 				name_split[2] = temp.join(' ');
-				// console.log("name_split2m----", name_split[2])
-				// console.log("qeustion_div----", question_div.html())
-				// console.log("comparison-----", name_split[2] == question_div.html().toLowerCase())
 				if (name_split[2] == question_div.html().toLowerCase()) {
-
 					
 					let _d = name_split[3].split(' ');
-					// let date = _d[1] + '/' + _d[2] + '/' + _d[3] + ' ' + _d[5] + ':' + _d[6] + ':' + _d[7] + ' ' + _d[8];
 					let nodeD = $('<i></i>').attr('class', 'date-part').html(downloadTime[i]); //document.createElement("i");  
 					let node = $('<div></div>').html(downloads[i])
-												.attr({'class': 'q watchv', 'data-link': linkPath});
+												.attr({'class': 'q watchv', 'data-link': linkPath + downloads[i]});
 					let new_table_row = $('<tr></tr>');					
 					new_table_row.append($('<td></td>').append(node));
 					new_table_row.append($('<td></td>').append(nodeD));
@@ -1225,7 +1182,7 @@ let showDownloadedVideosCount = () => {
 	console.log("showDownloadedVideosCount called");
 	chrome.storage.sync.get(['downloadedVideo'], function(result) {
 		downloads = result.downloadedVideo;				
-		console.log("downloads---", downloads);
+		// console.log("downloads---", downloads);
 		for (var i = downloads.length - 1; i >= 0; i--) {
 			increaseIndividualCounter(downloads[i]);			
 		}
@@ -1275,7 +1232,7 @@ let clickWatchV = () => {
 		// console.log('watchv-clicked', e.target.dataset);
 		// console.log("dPath---", dPath);
 		let pathV = e.target.dataset.link;
-		console.log("pathv----", pathV);
+		// console.log("pathv----", pathV);
 		if(pathV.indexOf('webm') != -1 || pathV.indexOf('mp4') != -1){
 			$('#watchI').attr("src", '');
 			$('#watchI').attr("class", '');

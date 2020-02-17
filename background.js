@@ -22,16 +22,13 @@ chrome.runtime.onMessage.addListener(
 			chrome.downloads.search({filenameRegex: '^.*\.(webm|png|mp4)$'}, function(data){
 				for (var i = 0; i < data.length; i++) {
 					if(data[i].filename.indexOf('videorecordmylife') != -1 && data[i].exists){
-						// console.log("indexOf---", data[i].filename.split('videorecordmylife')[0]);
-						pathOfDirectory = data[i].filename.split('downloads')[0];
+						pathOfDirectory = data[i].filename.split('videorecordmylife')[0] + 'videorecordmylife/';
+						console.log("indexOf---", data[i].filename.split('videorecordmylife')[0] + 'videorecordmylife/');
 						break;
 					} 
 				}
-				console.log("result-------", pathOfDirectory);
-				// var xhr = new XMLHttpRequest();
-				// xhr.onreadystatechange = handleVideoResults; // Implemented elsewhere.
-				// xhr.open("GET", chrome.runtime.getURL('525d3ec9-249a-401c-862c-9b0fd5e2639c'), true);
-				// xhr.send();
+				// console.log("result-------", pathOfDirectory);
+				
 				sendResponse({greeting: pathOfDirectory});
 			})
 		}
