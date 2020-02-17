@@ -13,9 +13,10 @@ chrome.runtime.onMessage.addListener(
 					url:      request.greeting.data,
 					filename: 'videorecordmylife/' + request.greeting.name
 			}, function(e){
-				chrome.runtime.sendMessage({greeting: e});
+				sendResponse({greeting: e});
 			});
-		} else if(request.greeting == 'getvideos'){
+		} 
+		else if(request.greeting == 'getvideos'){
 			console.log('here to get videos');
 			chrome.downloads.search({filenameRegex: '^.*\.(webm|png|mp4)$'}, function(data){
 				console.log(data);
@@ -23,7 +24,7 @@ chrome.runtime.onMessage.addListener(
 				// xhr.onreadystatechange = handleVideoResults; // Implemented elsewhere.
 				// xhr.open("GET", chrome.runtime.getURL('525d3ec9-249a-401c-862c-9b0fd5e2639c'), true);
 				// xhr.send();
-				chrome.runtime.sendMessage({greeting: {watchvideos: data}});
+				sendResponse({greeting: {watchvideos: data}});
 			})
 		}
 		return true;
@@ -36,4 +37,4 @@ function handleVideoResults(e) {
 
 chrome.storage.sync.clear(function(obj){
 	console.log("cleared");
-	});
+});
