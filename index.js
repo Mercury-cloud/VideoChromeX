@@ -101,9 +101,6 @@ var picture = videojs("myPicture", optionsCamera, function(){
 });
 
 
-
-var dPath = '';
-
 var player = videojs("myVideo", options, function(){
 	// print version information at startup
 	var msg = 'Using video.js ' + videojs.VERSION +
@@ -521,7 +518,7 @@ $(() => {
 		//-------Fill Interface--------
 		fillTemplate(false); //Not Menu
 		fillTemplate(true); //Menu
-		// setPrimaryDownloadData() //set downloads
+		setPrimaryDownloadData() //set downloads
 		// ----------Camera functions------
 		imageCaptureCallbacks();
 
@@ -1163,38 +1160,62 @@ function clickCounter(){
 		$('#questionSectionWatch').append(question_cont);
 
 		$('.watchuserdropdown .text').html($('.selected_user .text').html());
-		console.log("counter click----")
+		// console.log("counter click----")
 
-		for (var i = 0; i < downloads.length; i++) {
-			let name_split = downloads[i].split('_');
-			let temp = name_split[2].split('-');
-			name_split[2] = temp.join(' ');
-			// console.log("name_split2m----", name_split[2])
-			// console.log("qeustion_div----", question_div.html())
-			// console.log("comparison-----", name_split[2] == question_div.html().toLowerCase())
-			if (name_split[2] == question_div.html().toLowerCase()) {
+		// for (var i = 0; i < downloads.length; i++) {
+		// 	let name_split = downloads[i].split('_');
+		// 	let temp = name_split[2].split('-');
+		// 	name_split[2] = temp.join(' ');
+		// 	// console.log("name_split2m----", name_split[2])
+		// 	// console.log("qeustion_div----", question_div.html())
+		// 	// console.log("comparison-----", name_split[2] == question_div.html().toLowerCase())
+		// 	if (name_split[2] == question_div.html().toLowerCase()) {
 
 				
-				let _d = name_split[3].split(' ');
-				// let date = _d[1] + '/' + _d[2] + '/' + _d[3] + ' ' + _d[5] + ':' + _d[6] + ':' + _d[7] + ' ' + _d[8];
-				let nodeD = $('<i></i>').attr('class', 'date-part').html(downloadTime[i]); //document.createElement("i");  
-				let node = $('<div></div>').html(downloads[i])
-											.attr({'class': 'q watchv', 'data-link': dPath + 'Downloads/videorecordmylife/' + downloads[i]});
-				let new_table_row = $('<tr></tr>');
-				let new_table_cell = $('<td></td>').append(node);
-				new_table_row.append($('<td></td>').append(node));
-				new_table_row.append($('<td></td>').append(nodeD));
-				$('.file_table_body').append(new_table_row);
-			}
+		// 		let _d = name_split[3].split(' ');
+		// 		// let date = _d[1] + '/' + _d[2] + '/' + _d[3] + ' ' + _d[5] + ':' + _d[6] + ':' + _d[7] + ' ' + _d[8];
+		// 		let nodeD = $('<i></i>').attr('class', 'date-part').html(downloadTime[i]); //document.createElement("i");  
+		// 		let node = $('<div></div>').html(downloads[i])
+		// 									.attr({'class': 'q watchv', 'data-link': dPath + 'Downloads/videorecordmylife/' + downloads[i]});
+		// 		let new_table_row = $('<tr></tr>');
+		// 		let new_table_cell = $('<td></td>').append(node);
+		// 		new_table_row.append($('<td></td>').append(node));
+		// 		new_table_row.append($('<td></td>').append(nodeD));
+		// 		$('.file_table_body').append(new_table_row);
+		// 	}
 			
-		}
+		// }
 
-		// chrome.runtime.sendMessage({greeting: 'getvideos'}, function(response) {
-		// 	console.log("getvidoes response------", response);
-		// 	//Setup for next recording
-		// 	$('.vjs-record').click();
-		// 	clickWatchV();
-		// });
+		chrome.runtime.sendMessage({greeting: 'getvideos'}, function(response) {
+			// console.log("getvidoes response------", response);
+			console.log('length', response.greeting);
+			let linkPath = response.greeting;
+			for (var i = 0; i < downloads.length; i++) {
+				let name_split = downloads[i].split('_');
+				let temp = name_split[2].split('-');
+				name_split[2] = temp.join(' ');
+				// console.log("name_split2m----", name_split[2])
+				// console.log("qeustion_div----", question_div.html())
+				// console.log("comparison-----", name_split[2] == question_div.html().toLowerCase())
+				if (name_split[2] == question_div.html().toLowerCase()) {
+
+					
+					let _d = name_split[3].split(' ');
+					// let date = _d[1] + '/' + _d[2] + '/' + _d[3] + ' ' + _d[5] + ':' + _d[6] + ':' + _d[7] + ' ' + _d[8];
+					let nodeD = $('<i></i>').attr('class', 'date-part').html(downloadTime[i]); //document.createElement("i");  
+					let node = $('<div></div>').html(downloads[i])
+												.attr({'class': 'q watchv', 'data-link': linkPath});
+					let new_table_row = $('<tr></tr>');					
+					new_table_row.append($('<td></td>').append(node));
+					new_table_row.append($('<td></td>').append(nodeD));
+					$('.file_table_body').append(new_table_row);
+				}
+				
+			}
+			//Setup for next recording
+			$('.vjs-record').click();
+			clickWatchV();
+		});
 		
 	});
 }
@@ -1251,9 +1272,10 @@ let increaseIndividualCounter = (downloadData) => {
 
 let clickWatchV = () => {
 	$('.watchv').click(function(e){
-		console.log('watchv-clicked', e.target.dataset);
-		console.log("dPath---", dPath);
-		var pathV = e.target.dataset.link;
+		// console.log('watchv-clicked', e.target.dataset);
+		// console.log("dPath---", dPath);
+		let pathV = e.target.dataset.link;
+		console.log("pathv----", pathV);
 		if(pathV.indexOf('webm') != -1 || pathV.indexOf('mp4') != -1){
 			$('#watchI').attr("src", '');
 			$('#watchI').attr("class", '');
