@@ -157,18 +157,9 @@ $('#recordtab').click(() => {
 });
 
 $('#watchtab').click(() => {
-	// document.getElementById('record').classList = 'hidden';
-	// document.getElementById('watch').classList = 'content';
-	// document.getElementById('watchtab').classList = 'active';
-	// document.getElementById('recordtab').classList = '';
-
-	
+		
 	$('.q-active').siblings('.photo_count').click();
-	// chrome.runtime.sendMessage({greeting: 'getvideos'}, function(response) {
-	// 	console.log("getvidoes response------", response);
-	// 	//Setup for next recording
-	// 	$('.vjs-record').click();
-	// });
+
 });
 
 $('#play').click(() => {
@@ -1131,6 +1122,9 @@ function clickCounter(){
 		$('div.q').removeClass('q-active');
 		// console.log("this--------------", $(this));
 		$(this).siblings('div.q').addClass('q-active');
+		items.selectedQuestion = $(this).siblings('div.q').html();
+		items.selectedQHeader = $(this).siblings('div.q')[0].parentElement.parentElement.id;
+		console.log("---------", items.selectedQuestion);
 		var category_txt = $(this).parent().parent().prev().html();
 		// console.log($(this));
 		$('.watch_guide span').html('VIEW ALL ' + category_txt + ' PHOTOS/VIDEOS');

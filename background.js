@@ -23,7 +23,7 @@ chrome.runtime.onMessage.addListener(
 				for (var i = 0; i < data.length; i++) {
 					if(data[i].filename.indexOf('videorecordmylife') != -1 && data[i].exists){
 						pathOfDirectory = data[i].filename.split('videorecordmylife')[0] + 'videorecordmylife/';
-						console.log("indexOf---", data[i].filename.split('videorecordmylife')[0] + 'videorecordmylife/');
+						// console.log("indexOf---", data[i].filename.split('videorecordmylife')[0] + 'videorecordmylife/');
 						break;
 					} 
 				}
