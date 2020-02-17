@@ -166,7 +166,7 @@ $('#watchtab').click(() => {
 	// document.getElementById('recordtab').classList = '';
 
 	
-	$('.counter').click();
+	$('.q-active').siblings('.photo_count').click();
 	// chrome.runtime.sendMessage({greeting: 'getvideos'}, function(response) {
 	// 	console.log("getvidoes response------", response);
 	// 	//Setup for next recording
@@ -204,7 +204,7 @@ $('#pause').click(() => {
 
 // error handling
 player.on('deviceError', function() {
-	// console.warn('device error:', player.deviceErrorCode);
+	console.warn('device error:', player.deviceErrorCode);
 });
 
 // user clicked the record button and started recording
@@ -514,18 +514,18 @@ $(() => {
 	
 	chrome.storage.sync.get(['questions'], function(result) {
 		items = result.questions;
-		console.log("result------", result.questions);
+		// console.log("result------", result.questions);
 		setPrimaryQuestion();
 		//------Trial 30 Day period------
 		try30Period();
 		//-------Fill Interface--------
-		fillTemplate(false);//Not Menu
-		fillTemplate(true);//Menu
-		setPrimaryDownloadData() //set downloads
+		fillTemplate(false); //Not Menu
+		fillTemplate(true); //Menu
+		// setPrimaryDownloadData() //set downloads
 		// ----------Camera functions------
 		imageCaptureCallbacks();
 
-		//-------Show DownloadsCount-------
+		// -------Show DownloadsCount-------
 		showDownloadedVideosCount();
 
 		
@@ -1035,7 +1035,7 @@ let fillTemplate = (isMenu) => {
 let setPrimaryDownloadData = () => {
 	chrome.storage.sync.get(['downloadedVideo'], function(result) {
 		downloads = result.downloadedVideo;
-		// console.log('downloads', result.downloadedVideo);
+		console.log('downloads----------', result.downloadedVideo);
 		if(!downloads) {
 			// console.log('dddddddddddddddddddd');
 			chrome.storage.sync.set({"downloadedVideo": []}, function() {
@@ -1206,27 +1206,7 @@ let showDownloadedVideosCount = () => {
 		downloads = result.downloadedVideo;				
 		console.log("downloads---", downloads);
 		for (var i = downloads.length - 1; i >= 0; i--) {
-			increaseIndividualCounter(downloads[i]);
-			// var name_split = downloads[i].split('_');
-			// // console.log(name_split);
-			// if(name_split.length > 1) {
-			// 	for(var j = 0; j < name_split.length; j++){
-			// 		name_split[j] = name_split[j].replace(/\W/g, ' ');
-			// 	}
-			// }
-			// // console.log(name_split[2]);
-			// let question_div = $('#questionSection').find('.q');
-			// // console.log("question_div---", question_div.length);
-			// for (var k = 0; k < question_div.length; k++) {
-			// 	// console.log(question_div[k].innerHTML.toUpperCase().split('<')[0] == name_split[2].toUpperCase());
-			//   	if(question_div[k].innerHTML.toUpperCase().split('<')[0] == name_split[2].toUpperCase()) {
-			//   		let counter_span = question_div[k].previousElementSibling.getElementsByTagName('span')[0];
-			// 		let num = parseInt(counter_span.innerHTML);
-			// 		// console.log(num+1);
-			// 		counter_span.innerHTML = (num + 1).toString();			  		
-			//   	}
-			// }
-					
+			increaseIndividualCounter(downloads[i]);			
 		}
 		if(downloads == []) {
 			console.log("downloads empty!")
