@@ -121,11 +121,11 @@ let firstChange = true;
 
 
 // functionality changed by Bishoy
-// When the document is ready, start
+// When the document is ready, start!
 $(() => {
 	
-
 	chrome.storage.sync.get(['questions'], function(result) {
+
 		items = result.questions;
 		// console.log("result------", result.questions);
 		setPrimaryQuestion();
@@ -143,6 +143,8 @@ $(() => {
 		showDownloadedVideosCount();
 		
 	});
+
+
 
 	settingCallback();
 	reminderCallback();
@@ -179,7 +181,6 @@ let switchTabFunctions = () => {
 	});
 
 	$('#watchtab').click(() => {
-		$('.vjs-control-bar').css('display', 'none');
 		$('.q-active').siblings('.photo_count').click();
 	});
 }
@@ -711,7 +712,7 @@ let fillTemplate = (isMenu) => {
 						chrome.storage.sync.set({"questions": items}, function() {
 							console.log(items);
 						});
-						setupQuestionSelection();
+						// setupQuestionSelection();
 						fillTemplate(false);//Not Menu
 						fillTemplate(true);//Menu
 					} else {
@@ -731,19 +732,23 @@ let fillTemplate = (isMenu) => {
 		var s = qh.querySelectorAll(".cont");		
 		t[0].innerHTML = items.headers[i];
 		s[0].id = items.headers[i];
-		// console.log(items.headers[i]);
+		// console.log("headers--", items.headers[i]);
 		document.getElementById(qhCont).appendChild(qh);
 		chrome.storage.sync.get(items.headers[i], function(result) {
 			var resultArray = Object.entries(result);
-			// console.log(resultArray);
 			var qList = Object.entries(resultArray[0][1]);
+			console.log('resutl---', resultArray[0][1]);
+			// console.log('qlist---', qList);
 			for(j in qList){
 				var q = document.importNode(document.querySelector(qObj).content, true);
 				var s = q.querySelectorAll(".q");
 				s[0].innerHTML = qList[j][0];
 				if(!isMenu){
-					// console.log(items.selectedUser);
+					// console.log("user----", items.selectedUser);
+					console.log("qList---", qList[j][1])
+					// console.log("users----", qList[j][1][items.selectedUser])
 					if(qList[j][1] && qList[j][1][items.selectedUser]) {//Answered
+
 						s[0].innerHTML = s[0].innerHTML + '<span> (' + items.selectedUser.charAt(0).toUpperCase() + items.selectedUser.slice(1) + ' Answered)</span';
 					}
 					document.getElementById(resultArray[0][0]).appendChild(q);
@@ -765,6 +770,7 @@ let fillTemplate = (isMenu) => {
 				if(!isMenu){
 					setupQuestionSelection();
 					clickCounter();
+
 				}	
 			}
 		});
@@ -877,9 +883,13 @@ function resetSelected() {
 
 // when you click the number, you can go to view screen
 function clickCounter(){
-	$('.counter').click(function(e){
+	$('.video_count').click((e) => {
+		$(this).siblings('.photo_count').click();
+	})
+	$('.photo_count').click(function(e){
 		$('#questionSectionWatch').empty();
 		$('.file_table_body').empty();
+		$('.vjs-control-bar').css('display', 'none');
 		$('#watch').addClass('content').removeClass('hidden');
 		$('#record').addClass('hidden').removeClass('content');
 		$('#recordtab').removeClass('active');
@@ -917,7 +927,6 @@ function clickCounter(){
 				name_split[2] = temp.join(' ');
 				if (name_split[2] == question_div.html().toLowerCase()) {
 					
-					let _d = name_split[3].split(' ');
 					let nodeD = $('<i></i>').attr('class', 'date-part').html(downloadTime[i]); //document.createElement("i");  
 					let node = $('<div></div>').html(downloads[i])
 												.attr({'class': 'q watchv', 'data-link': linkPath + downloads[i]});
@@ -927,13 +936,11 @@ function clickCounter(){
 					$('.file_table_body').append(new_table_row);
 				}
 				
-			}
-			//Setup for next recording
-			$('.vjs-record').click();
+			}			
 			clickWatchV();
 		});
-		
 	});
+	clickWatchGuide();
 }
 
 //set the public values downloads and downloadTime
@@ -996,7 +1003,7 @@ let increaseIndividualCounter = (downloadData) => {
 
 let clickWatchV = () => {
 	$('.watchv').click(function(e){
-		// console.log('watchv-clicked', e.target.dataset);
+		// console.log('watchv-clicked');
 		// console.log("dPath---", dPath);
 		let pathV = e.target.dataset.link;
 		// console.log("pathv----", pathV);
@@ -1026,7 +1033,35 @@ let clickWatchV = () => {
 	})
 }
 
-
+let clickWatchGuide = () => {
+	$('#show_all').click((e) => {
+		console.log($('#questionSectionWatch h3').html());
+		$('#questionSectionWatch div').empty();
+		$('.file_table_body').empty();
+		chrome.runtime.sendMessage({greeting: 'getvideos'}, function(response) {
+			let linkPath = response.greeting;
+			let couter = 0;
+			for (var i = 0; i < downloads.length; i++) {
+				let name_split = downloads[i].split('_');
+				let temp = name_split[1].split('-');
+				name_split[1] = temp.join(' ');
+				if (name_split[1] == $('#questionSectionWatch h3').html().toLowerCase()) {
+					couter++;
+					console.log("couter---", couter);
+					console.log("result---", downloads[i]);
+					let nodeD = $('<i></i>').attr('class', 'date-part').html(downloadTime[i]); //document.createElement("i");  
+					let node = $('<div></div>').html(downloads[i])
+												.attr({'class': 'q watchv', 'data-link': linkPath + downloads[i]});
+					let new_table_row = $('<tr></tr>');					
+					new_table_row.append($('<td></td>').append(node));
+					new_table_row.append($('<td></td>').append(nodeD));
+					$('.file_table_body').append(new_table_row);
+				}
+			}	
+			clickWatchV();			
+		});
+	});
+}
 
 
 
