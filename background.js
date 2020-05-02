@@ -16,14 +16,14 @@ chrome.runtime.onMessage.addListener(
 				sendResponse({greeting: e});
 			});
 		} 
-		else if(request.greeting == 'getvideos'){
+		else if(request.greeting == 'getdirectoryPath'){
 			console.log('here to get videos');
 			let pathOfDirectory = null;
 			chrome.downloads.search({filenameRegex: '^.*\.(webm|png|mp4)$'}, function(data){
 				for (var i = 0; i < data.length; i++) {
 					if(data[i].filename.indexOf('videorecordmylife') != -1 && data[i].exists){
 						pathOfDirectory = data[i].filename.split('videorecordmylife')[0] + 'videorecordmylife/';
-						// console.log("indexOf---", data[i].filename.split('videorecordmylife')[0] + 'videorecordmylife/');
+						console.log("indexOf---", data[i].filename.split('videorecordmylife')[0] + 'videorecordmylife/');
 						break;
 					} 
 				}
@@ -37,9 +37,9 @@ chrome.runtime.onMessage.addListener(
 
 
 function handleVideoResults(e) {
-	console.log('blob', e);
+	// console.log('blob', e);
 }
 
-// chrome.storage.sync.clear(function(obj){
-// 	console.log("cleared");
-// });
+chrome.storage.sync.clear(function(obj){
+	console.log("cleared");
+});

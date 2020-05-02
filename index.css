@@ -1,17 +1,23 @@
 body {
 	min-width: 1000px;
-	height: 1000px;
+	height: 800px;
 }
 
 #menu {
 	display: flex;
+	position: fixed;
 	align-items: center;
 	margin-bottom: 0;
-	min-height: 182px;
+	min-height: 184px;
+	z-index: 100;
+	width: 100%;
 }
 
 .corner-text {
 	display: inline-block;
+	position: absolute;
+	left: 9%;
+	top: 30px;
 }
 
 .corner-menu h2 {
@@ -51,7 +57,9 @@ li:hover {
 
 .reminders {
 	margin-left: 30px;
-
+	position: absolute;
+	left: 27%;
+	top: 15px;
 }
 
 .reminders h2 {
@@ -64,7 +72,8 @@ li:hover {
 }
 
 .hidden {
-	visibility: hidden;
+	display: none;
+	/*visibility: hidden;*/
 	height: 0;
 }
 
@@ -74,6 +83,7 @@ li:hover {
 	padding: .5rem;
 	width: 150px;
 }
+
 #questions .ui.selection.dropdown {
   margin: 14px 0 0 0;
 }
@@ -90,6 +100,7 @@ li:hover {
 .video-container {
 	width: 45%;
 	padding-left: 15px;
+	margin-left: 15px;
 }
 
 .ui.small.image {
@@ -118,8 +129,8 @@ li:hover {
 }
 
 .dropdown {
-	margin-bottom: 30px;
-	margin-top: 15px;
+	margin-bottom: 15px;
+	margin-top: 10px;
 }
 
 .ui.input>input, .ui.action.input>.button {
@@ -151,6 +162,9 @@ h1 {
 	margin-top: 1rem;
 	width: 80%;  /* this is added by Bishoy*/
 	float: right;  /* this is added by Bishoy*/
+	font-size: 16px;
+	padding: 7px;
+	height: 35px;
 }
 
 .error {
@@ -173,29 +187,37 @@ h1 {
 	padding-left: 10px;
 }
 .play-section {
-	padding-top: 20px;
-	padding-bottom: 20px;
+	padding-top: 30px;
+	padding-bottom: 10px;
 }
 
 .play-section img {
-	height: 60px;
+	height: 50px;
 }
 
 .play-section img:hover {
 	background-color: lightgrey;
 }
 
-/*.vjs-time-divider {
-	display: none !important;
-}*/
-
-.vjs-control-bar button {
+.vjs-time-divider {
 	display: none !important;
 }
 
-/*.vjs-duration {
+#myVideo .vjs-control-bar, #myVideoSmall .vjs-control-bar {
 	display: none !important;
-}*/
+}
+
+#myWatchVideo .vjs-control-bar{
+	display: block !important;
+}
+
+#myWatchVideo .vjs-control-bar div{
+	display: none !important;
+}
+
+.vjs-duration {
+	display: none !important;
+}
 
 .hidden {
 	visibility: hidden;
@@ -206,8 +228,11 @@ h1 {
 	height: 20px;
 	background-color: red;
 	color: white;
-	width: 720px;
+	width: 600px;
 	text-align: center;
+	z-index: 100;
+	position: fixed;
+	margin-top: -5px;
 }
 
 .scroll-y {
@@ -216,18 +241,18 @@ h1 {
 }
 
 #play, #pause, #stop, #picture {
-	width: 60px;
+	width: 50px;
 	text-align: center;
 	display: inline-block;
 }
 
 #picture {
-	width: 120px;
+	width: 80px;
 }
 
 #picture img {
-	padding-left:20px;
-	padding-right: 20px;
+	padding-left: 10px;
+	padding-right: 10px;
 }
 
 #code {
@@ -240,15 +265,19 @@ h1 {
 
 .folders {
 	display: flex;
-	width: 100%;
+	position: fixed;
+	top: 144px;
+	width: 70%;
+	z-index: 100;
 }
 
 .folders div {
+	border: 1px solid lightgrey;
 	flex: 1 1 60%;
-	font-size: 1.75rem;
+	font-size: 1.1rem;
 	line-height: 2.5rem;
 	text-align: center;
-	padding: 10px;
+	padding: 2px 0 0 0;
 	letter-spacing: 1px;
 	background-color: #f3f4f5;
 	border-bottom: 1px solid transparent;
@@ -259,7 +288,7 @@ h1 {
 }
 
 #recordtab {
-	border-right: 1px solid lightgrey;
+	border-right: none;
 }
 
 #recordtab, #watchtab {
@@ -270,18 +299,21 @@ h1 {
 }
 
 #myWatchVideo {
-	margin-top: 120px;
+	margin-top: 85px;
 }
 
-#watch .record-container {
-	position: relative;	
+.record-container{
+	position: fixed;	
+	left: 51%;
+	top: 180px;
 }
 
 #watchI {
 	position: absolute;
-	top: 0;
-	left: 0;
+	top: 120px;
+	left: 2%;
 	width: 100%;
+	display: none;
 }
 
 .show {
@@ -307,22 +339,18 @@ h1 {
 
 #watch {
 	background-color: #e6e6e6;
-	min-height: 700px;
+	min-height: 600px;
 }
 
 .blockline-title {
 	display: block;
 }
 
-.watchv {
-	display: inline;
-}
-
 #reminder {
 	position: absolute;
 	top: 0px;
-	right: 10px;
-	letter-spacing: 1px;;
+	right: 140px;
+	letter-spacing: 1px;
 }
 
 .modal-pad {
@@ -331,17 +359,19 @@ h1 {
 
 .coll {
 	position: absolute;
-    top: 22px;
+    top: 28px;
 	right: 0;
 	letter-spacing: 1px;
-	max-width: 275px;
+	/*max-width: 275px;*/
 	overflow: hidden;
+	z-index: 100;
 }
 
 .coll p {
 	padding: 0;
 	margin-bottom: 0;
 	margin: 5px 0;
+	justify-content: center;
 }
 
 .coll button {
@@ -352,14 +382,17 @@ h1 {
 }
 
 .big-q {
-	padding-right: 260px;
+	padding-right: 0px;
+	width: 75%;
+	margin-top: -5px;
+	font-size: 32px !important;
 }
 
-/* #myVideoSmall {
-	margin-left: 45px;
-} */
+#myVideoSmall {
+	margin-left: 40px;
+} 
 
-.ui.green.button {
+.ui.green.button, .ui.red.button{
 	width: 94px;
 	font-size: .8rem;
 }
@@ -368,14 +401,16 @@ h1 {
 	display: none;
 }
 
-
+#myVideo {
+	margin-top: -5px;
+}
 
 
 /*added style by Bishoy*/
 
 .sidemenu {
 	width: 50%;
-	padding: 15px;
+	padding: 15px 0 0 15px;
 }
 
 .quantity_bar {
@@ -386,12 +421,12 @@ h1 {
 }
 
 #quan_title{
-	padding: 15px 0 15px 0;
+	padding: 10px 0 10px 0;
 	/*border-bottom: 2px solid lightgrey;*/
 }
 
 #quan_title p {
-	margin: 0 1.8em 0 1.6em;
+	margin: 0 8% 0 8%;
 }
 
 #quan_title_border {
@@ -401,19 +436,51 @@ h1 {
 }
 
 .main_bar {
-	border-left: 3px solid #99b3ff; 
+	/*border-left: 3px solid #99b3ff; */
+	margin-top: 8em;
+	padding-top: 5em;
 	padding-left: 1em;
-	width: 78%;
+	width: 100%;
+	/*height: 50px;
+	overflow: auto;*/
+}
+
+.main_bar {
+	text-align: center;
+}
+
+#questionWrapper {
+	/*margin-top: -5px;*/
+	float: right;
+	width: 98%;
+	height: 190px;
+	margin-top: -190px;
+	overflow: scroll;
 }
 
 #questionSection {
-	float: right;
-	width: 125%;
-	height: 480px;
+	/*margin-top: -5px;*/
+	min-height: 200px;
+	height: 1000px;
 }
 
-#questionSectionWatch {
-	height: auto;
+/*#questionSectionWatch {
+	float: right;
+	width: 98%;
+	height: 190px;
+	margin-top: -190px;
+}*/
+
+#questionSection h3 {
+	float: right;
+	width: 80% !important;
+}
+
+#questionSection .ui.header {
+	font-size: 16px;
+	padding: 7px;
+	height: 35px;
+	margin-bottom: 5px !important;
 }
 
 .counter {
@@ -428,6 +495,7 @@ h1 {
 
 .watch_guide {
 	text-align: -webkit-center;
+	margin-left: 15%;
 }
 
 .watch_guide span {
@@ -444,9 +512,98 @@ h1 {
 
 #file_date_table{
 	background-color: #f3f4f5;
-	margin-top: 1rem;
+	margin-top: 0.5rem;
+	height: 230px;
+}
+
+#file_date_table table th {
+	padding-top: 5px;
+	padding-bottom: 5px;
+}
+
+#file_date_table table td {
+ 	padding-top: 0;
+	padding-bottom: 0;
 }
 
 #watchtab:hover, #recordtab:hover {
 	cursor: pointer;
 }
+
+#record, #watch {
+	position: absolute;
+	top: 180px;
+}
+
+.category_select {
+	width: 150%;
+}
+
+.category_select div{
+	display: inline-block;
+}
+
+.watch_container {
+	position: fixed;
+	left: 50%;
+}
+
+#coll {
+	position: absolute;
+	top: 0px;
+	right: 20px;
+	letter-spacing: 1px;
+}
+
+#mainimage {
+	position: absolute;
+	top: 30px;
+}
+
+.question-big {
+	margin-right: 0px;
+}
+
+.tooltiptext {
+  opacity: 0;
+  transition: opacity 0.5s;
+  width: 50px;
+  font-size: 10px;
+  background-color: black;
+  color: #fff;
+  text-align: center;
+  border-radius: 6px;
+  padding: 5px 0;
+
+  /* Position the tooltip */
+  position: absolute;
+  z-index: 121;
+  top: 100%;
+  left: 50%;
+  margin-left: 0px;
+}
+
+.play-section div:hover .tooltiptext {
+  opacity: 1;
+}
+
+.play-section div .tooltiptext::after {
+  content: "";
+  position: absolute;
+  bottom: 100%;
+  left: 50%;
+  margin-left: -5px;
+  border-width: 5px;
+  border-style: solid;
+  border-color: transparent transparent black transparent;
+}
+
+.main_bar .dropdown {
+	display: block !important;
+}
+
+.watch_quantity_bar {
+	margin-top: -45px;
+	height: 260px;
+}
+

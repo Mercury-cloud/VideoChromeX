@@ -1,8 +1,8 @@
-var downloadTime = [];
 
-var options = {
+
+let options = {
 	controls: true,
-	width: 720,
+	width: 600,
 	height: 420,
 	fluid: false,
 	
@@ -11,139 +11,140 @@ var options = {
 			audio: true,
 			video: true,
 			maxLength: 7200,
+			audioEngine: 'recordrtc',
 			videoMimeType:"video/webm;codecs=H264",
 			debug: true
 		}
 	}
 };
 
-var optionsSmall = {
+let optionsSmall = {
 	controls: true,
-	width: 176,
-	height: 100,
+	width: 280,
+	height: 140,
+	fluid: false,
 	controlBar: {
-			volumePanel: false
+		volumePanel: false
 	},
 	plugins: {
-			record: {
-					audio: true,
-					//controls: true,
-					video: {
-						// video constraints: set resolution of camera
-						mandatory: {
-								minWidth: 1280, 
-								minHeight: 720,
-						},
-						
-					},
-					// dimensions of captured video frames
-					frameWidth: 1280,
-					frameHeight: 720,
-					maxLength: 7200,
-					videoMimeType:"video/webm;codecs=H264",
-					debug: true
-			}
+		record: {
+			audio: false,
+			video: true,
+			frameWidth: 1280,
+			frameHeight: 720,
+			maxLength: 7200,
+			videoMimeType:"video/webm;codecs=H264",
+			debug: true
+		}
 	}
 };
 
-var watchoptions = {
+let watchoptions = {
 	controls: true,
-	width: 720,
+	autoplay: true,
+	width: 600,
 	height: 420,
+	controlBar: {
+		volumePanel: false,
+		fullscreenToggle: false
+	},
 };
 
 
-var optionsCamera = {
+let optionsCamera = {
 	controls: true,
-	width: 1280,
-	height: 720,
+	width: 960,
+	height: 630,
 	controlBar: {
-			volumePanel: false,
-			fullscreenToggle: false
+		volumePanel: false,
+		fullscreenToggle: false
 	},
 	plugins: {
-			record: {
-					image: true,
-					debug: true
-			}
+		record: {
+			image: true,
+			debug: true
+		}
 	}
 };
 
-var picture = videojs("myPicture", optionsCamera, function(){
-	$('.vjs-record')[2].click();
+let picture = videojs("myPicture", optionsCamera, function(){
 	console.log("initilized picture taker");
 });
 
-var player = videojs('myVideo', options, function() {
+let player = videojs('myVideo', options, function() {
     // print version information at startup
-    var msg = 'Using video.js ' + videojs.VERSION +
+    let msg = 'Using video.js ' + videojs.VERSION +
         ' with videojs-record ' + videojs.getPluginVersion('record') +
         ' and recordrtc ' + RecordRTC.version;
     videojs.log(msg);
-    $('.vjs-record').click();
 });
 
-var playerSmall = videojs("myVideoSmall", optionsSmall, function(){
+let playerSmall = videojs("myVideoSmall", optionsSmall, function(){
 	// print version information at startup
-	var msg = 'Using video.js ' + videojs.VERSION +
+	let msg = 'Using video.js ' + videojs.VERSION +
 			' with videojs-record ' + videojs.getPluginVersion('record') +
 			' and recordrtc ' + RecordRTC.version;
 	videojs.log(msg);
-	// $('.vjs-record').click();
 });
 
-var wplayer = videojs("myWatchVideo", watchoptions, () => {
+let wplayer = videojs("myWatchVideo", watchoptions, () => {
 
 });
 
 
+let initial = () => {
+	if(cameraDetectVal) return;
+	$('#myPicture button.vjs-record').click();
+    $('#myVideo button.vjs-record').click();
+    $('#myVideoSmall button.vjs-record').click();
+}
 
 
-//------Format-----
-//var downloads = [];
-// chrome.storage.sync.get(['downloads'], function(result) {
-// 	var olddownloads = result.downloads;
-// 	if(olddownloads) {
-// 		chrome.storage.local.clear(function() {
-// 			var error = chrome.runtime.lastError;
-// 			if (error) {
-// 				console.error(error);
-// 			}
-// 		});
-// 	}
-// })
 
-
-let hidden = true;
 let items = {};
 let downloads = [];
+let downloadTime = [];
 let firstChange = true;
+let headerChange = true;
+let headerChanged = false;
+let questionChange = true;
+let call_clicked = false;
+let cameraDetectVal = false;
 
 
 // functionality changed by Bishoy
 // When the document is ready, start!
 $(() => {
 	
+	initial();
+		
+	cameraDetect();
+	
 	chrome.storage.sync.get(['questions'], function(result) {
 
 		items = result.questions;
 		// console.log("result------", result.questions);
 		setPrimaryQuestion();
+
+		// recordquestionSetting();
 		//------Trial 30 Day period------
 		try30Period();
 		//-------Fill Interface--------
-		fillTemplate(false); //Not Menu
 		fillTemplate(true); //Menu
+		fillTemplate(false); //Not Menu
 		setPrimaryDownloadData() //set downloads
+		recordqHeaderSetting();
+
 		// ----------Camera functions------
 		imageCaptureCallbacks();
 		videoRecordCallbacks();
 
-		// -------Show DownloadsCount-------
-		showDownloadedVideosCount();
+		setTimeout(function() {
+			// -------Show DownloadsCount-------
+			showDownloadedVideosCount('record');
+		}, 1000);
 		
 	});
-
 
 
 	settingCallback();
@@ -153,38 +154,45 @@ $(() => {
 	imagechangeCallbacks();
 	addItemCallback();
 	switchTabFunctions();
+	clickWatchGuide();
 
 });
 
+//click call button
 let callfunctionality = () => {
 
 	$('#call').click(() => {
-		console.log("call clicked")
-		if(hidden) {
-			document.getElementById('myVideoSmall').className = 'video-js vjs-default-skin';
-			hidden = false;
-		} else {
-			document.getElementById('myVideoSmall').className = 'hiddenVideo';
-			hidden = true;
-		}
+		if(call_clicked) return;
+		// $(this).addClass('red').removeClass('green').html('end');
+		document.getElementById('myVideoSmall').className = 'video-js vjs-default-skin';
+		call_clicked = true;
 	});
+
+	$('#end').click(() => {
+		document.getElementById('myVideoSmall').className = 'hiddenVideo';
+		$('.coll div input').val('');
+		call_clicked = false;
+	});
+
 }
 
+// switch record and watch button
 let switchTabFunctions = () => {
 
 	$('#recordtab').click(() => {
+		// $('div.q')[0].className = 'q q-active';
 		document.getElementById('watch').classList = 'hidden';
 		document.getElementById('record').classList = 'content';
 		document.getElementById('recordtab').classList = 'active';
 		document.getElementById('watchtab').classList = '';
-
 	});
 
 	$('#watchtab').click(() => {
-		$('.q-active').siblings('.photo_count').click();
+		tabChangeFunction();
 	});
 }
 
+//click setup button
 let settingCallback = () => {
 
 	$("#settings").click(function() {
@@ -193,6 +201,7 @@ let settingCallback = () => {
 	});
 }
 
+//click reminder link
 let reminderCallback = () => {
 
 	$("#reminder").click(function() {
@@ -220,14 +229,14 @@ let imagechangeCallbacks = () => {
 // Image capturing function commented by Bishoy
 let imageCaptureCallbacks = () => {
 	$('#picture').click(function(){
-		console.log("clicked image");
-		$('.vjs-camera-button').click();
+		if(!cameraDetectVal) {
+			window.confirm("Hello, Camera is not connected!");
+			return;
+		}
+		$('.vjs-camera-button')[2].click();
 	});
 	picture.on('finishRecord', function() {
-		// console.log("captured image", downloads);
-			// the blob object contains the recorded data that
-		// can be downloaded by the user, stored on server etc.
-
+		
 		var user = items.selectedUser ? items.selectedUser.replace(/[\W_]+/g, '-').toLowerCase() : "user";
 		var header = items.selectedQHeader ? items.selectedQHeader.replace(/[\W_]+/g, '-').toLowerCase() : "header";
 
@@ -259,13 +268,18 @@ let imageCaptureCallbacks = () => {
 				//Setup for next recording
 				document.querySelectorAll('.vjs-camera-button')[1].click();
 			});
+			console.log(downloads, downloadTime);
 			downloads.push(filenameValid + '_.png');
-			increaseIndividualCounter(filenameValid + '_.png');
+			downloadTime.push(new Date().toLocaleString());
+			
+
+			increaseIndividualCounter(filenameValid + '_.png', 'record');
+			player.record().stop();
 			// console.log("downloads---", downloads);
 			chrome.storage.sync.set({"downloadedVideo": downloads}, function() {
-				//console.log('Value is set to ', items);				
+				//console.log('Value is set to ', items);
+				filltable();				
 			});
-			downloadTime.push(new Date().toLocaleString());
 			chrome.storage.sync.set({"downloadedVideosTime": downloadTime}, function() {
 				//console.log('Value is set to ', items);
 			});
@@ -275,12 +289,42 @@ let imageCaptureCallbacks = () => {
 	});
 }
 
+let successCallback = () => {
+	// console.log("camera detected");
+	initial();
+	cameraDetectVal = true;
+	cameraDetect();
 
+}
 
+let errorCallback = () => {
+	cameraDetectVal = false;
+	// console.log("camera error");
+	cameraDetect();
+}
+
+let cameraDetect = () => {
+
+	setTimeout(function() {
+		navigator.getUserMedia = navigator.getUserMedia || navigator.webkitGetUserMedia;
+	  	if (navigator.getUserMedia){
+	    	navigator.getUserMedia({video: true}, successCallback, errorCallback);
+		}		
+	}, 1000);
+	
+}
+
+// the callbacks while video recording
 let videoRecordCallbacks = () => {
+
 	// console.log(player)
 	
 	$('#play').click(() => {
+		// console.log("camera---", navigator.getUserMedia);
+		if(!cameraDetectVal) {
+			window.confirm("Hello, Camera is not connected!");
+			return;
+		}
 		if(player.record().isRecording()) {
 			player.record().resume();
 		} else {
@@ -322,11 +366,6 @@ let videoRecordCallbacks = () => {
 
 	// user completed recording and stream is available
 	player.on('finishRecord', function() {
-		// the blob object contains the recorded data that
-		// can be downloaded by the user, stored on server etc.
-		console.log('finished recording: ', player.recordedData);
-		console.log(player.recordedData);
-
 		var user = items.selectedUser ? items.selectedUser.replace(/[\W_]+/g, '-').toLowerCase() : "user";
 		var header = items.selectedQHeader ? items.selectedQHeader.replace(/[\W_]+/g, '-').toLowerCase() : "header";
 		var question;
@@ -358,13 +397,18 @@ let videoRecordCallbacks = () => {
 				//Setup for next recording
 				$('.vjs-record').click();
 			});
+			// console.log(downloads, downloadTime);
+
 			downloads.push(filenameValid + '_.webm');
-			increaseIndividualCounter(filenameValid + '_.webm');
-			// console.log("downloads---", downloads);
+			
+			downloadTime.push(new Date().toLocaleString());
+
+			increaseIndividualCounter(filenameValid + '_.webm', 'record');
+
 			chrome.storage.sync.set({"downloadedVideo": downloads}, function() {
 				//console.log('Value is set to ', items);				
+				filltable();
 			});
-			downloadTime.push(new Date().toLocaleString());
 			chrome.storage.sync.set({"downloadedVideosTime": downloadTime}, function() {
 				//console.log('Value is set to ', items);
 			});
@@ -373,12 +417,13 @@ let videoRecordCallbacks = () => {
 
 }
 
-
+//add item(+ button) click on the set up modal
 let addItemCallback = () => {
 	$('.add-item').click(function(e){
 		console.log(e);
 		var type = e.currentTarget.parentElement.parentElement.id;
 		var newValue = e.currentTarget.parentElement.childNodes[1].value;
+		console.log(type, newValue);
 		if(type == "users" && newValue){
 			if(items["users"]){
 				items["users"].push({"name": newValue});
@@ -387,6 +432,8 @@ let addItemCallback = () => {
 			}
 			fillTemplate(true);
 			fillTemplate(false);
+			showDownloadedVideosCount("record");
+
 		} else if(type == "questions" && newValue){
 			if(e.currentTarget.parentElement.childNodes[3].innerText == "Add Header" || e.currentTarget.parentElement.childNodes[3].innerText == "") {
 				return false;
@@ -397,20 +444,25 @@ let addItemCallback = () => {
 				chrome.storage.sync.set(result, function(){
 					fillTemplate(true);
 					fillTemplate(false);
+					showDownloadedVideosCount("record");
+
 				});
 			});
-		} else if(type == "headers" && newValue){
+		} else if(type == "qHeaders" && newValue){
 			if(items["headers"]){
 				items["headers"].push(newValue);
 			} else {
 				items["headers"] = [newValue];
 			}
+			// console.log('headers--', items['headers']);
 			chrome.storage.sync.set({newValue: {}}, function(){
 				fillTemplate(true);
 				fillTemplate(false);
+				showDownloadedVideosCount("record");
+
 			});
 		}
-		console.log("items", items);
+		// console.log("items", items);
 		e.currentTarget.parentElement.childNodes[1].value = "";
 
 		chrome.storage.sync.set({"questions": items}, function() {
@@ -419,6 +471,7 @@ let addItemCallback = () => {
 	});
 }
 
+//set primary questions => items
 let setPrimaryQuestion = () => {
 	if(!items) {
 		items = {
@@ -631,12 +684,14 @@ let setPrimaryQuestion = () => {
 	}
 }
 
+//save question to storage
 let setNewQuestion = (headerObj) => {
 	chrome.storage.sync.set(headerObj, function() {
 		// console.log('Header w/ questions added: ', headerObj);
 	});
 }
 
+// try30period function
 let try30Period = () => {
 	var d = new Date().getTime();
 	if(d > items.beginDate && !items.unlocked){
@@ -658,6 +713,7 @@ let try30Period = () => {
 	}
 }
 
+
 //Fill both Setup/Main Screen with questions
 let fillTemplate = (isMenu) => {
 	var qhObj = isMenu ? "#question-header-setup" : "#question-header";
@@ -673,7 +729,6 @@ let fillTemplate = (isMenu) => {
 	$('#'+uCont).empty();
 	if(isMenu){
 		$("#setupQ").empty();
-		
 	}
 
 	//Set Dropdown and correct section
@@ -688,7 +743,6 @@ let fillTemplate = (isMenu) => {
 			ignoreCase: true
 		});
 	}
-
 	
 	// console.log("users----", items.users);
 	for(i in items.users){
@@ -701,7 +755,7 @@ let fillTemplate = (isMenu) => {
 
 		// }
 		if(!isMenu){
-			$('.dropdown').dropdown({
+			$('.selected_user').dropdown({
 				ignoreCase: true,
 				action: 'activate',
 				onChange: (value) => {
@@ -712,41 +766,35 @@ let fillTemplate = (isMenu) => {
 						chrome.storage.sync.set({"questions": items}, function() {
 							console.log(items);
 						});
-						// setupQuestionSelection();
 						fillTemplate(false);//Not Menu
 						fillTemplate(true);//Menu
+						questionSelect();
+						showDownloadedVideosCount("record");
 					} else {
 						firstChange = false;
 					}
 				}
 			});
-			$('.ui.dropdown').dropdown('set selected', items.selectedUser);
+			$('.ui.selected_user').dropdown('set selected', items.selectedUser);
 		}
-	}
-
-	// console.log("items----------", items);
+	}	
 	//Add Values
 	for(i in items.headers){
 		var qh = document.importNode(document.querySelector(qhObj).content, true);		
 		var t = qh.querySelectorAll(".q-header");
-		var s = qh.querySelectorAll(".cont");		
+		var s = qh.querySelectorAll(".cont");	
+		// console.log(items);	
 		t[0].innerHTML = items.headers[i];
 		s[0].id = items.headers[i];
-		// console.log("headers--", items.headers[i]);
 		document.getElementById(qhCont).appendChild(qh);
 		chrome.storage.sync.get(items.headers[i], function(result) {
 			var resultArray = Object.entries(result);
 			var qList = Object.entries(resultArray[0][1]);
-			console.log('resutl---', resultArray[0][1]);
-			// console.log('qlist---', qList);
 			for(j in qList){
 				var q = document.importNode(document.querySelector(qObj).content, true);
 				var s = q.querySelectorAll(".q");
 				s[0].innerHTML = qList[j][0];
 				if(!isMenu){
-					// console.log("user----", items.selectedUser);
-					console.log("qList---", qList[j][1])
-					// console.log("users----", qList[j][1][items.selectedUser])
 					if(qList[j][1] && qList[j][1][items.selectedUser]) {//Answered
 
 						s[0].innerHTML = s[0].innerHTML + '<span> (' + items.selectedUser.charAt(0).toUpperCase() + items.selectedUser.slice(1) + ' Answered)</span';
@@ -758,34 +806,43 @@ let fillTemplate = (isMenu) => {
 					u.innerText = resultArray[0][0];
 					var d = q.querySelector('.delete-item');
 					d.title = resultArray[0][0];
-					//var qu = q.querySelector('.q');
-					//qu.title = qList[j][0];
 					document.getElementById("setupQ").appendChild(q);
 				}
 			}
+			
 			if(items.headers && items.headers.indexOf(resultArray[0][0]) == items.headers.length - 1){
 				if(isMenu){
 					setUpDeleteEvents();
 				} 
 				if(!isMenu){
-					setupQuestionSelection();
-					clickCounter();
-
+					// resetSelected();
+					questionClickCallback();
+					// clickCounter();
 				}	
 			}
 		});
 	}
+	// $('#questionWrapper').scr0ollTop('100px');
+	// $('#questionSection').animate({ scrollTop: '100px' });
+		// document.getElementById('questionWrapper').scrollTop = '100px';
+			// console.log("height----------", $('#questionSection').outerHeight());
 }
 
+// set the public variable downloads
 let setPrimaryDownloadData = () => {
 	chrome.storage.sync.get(['downloadedVideo'], function(result) {
 		downloads = result.downloadedVideo;
-		// console.log('downloads----------', result.downloadedVideo);
 		if(!downloads) {
-			// console.log('dddddddddddddddddddd');
+			downloads = [];
 			chrome.storage.sync.set({"downloadedVideo": []}, function() {
 				//console.log('Value is set to ', items);
 			});
+		}
+	});
+	chrome.storage.sync.get(['downloadedVideosTime'], function(result) {
+		downloadTime = result.downloadedVideosTime;
+		if(!downloadTime) {
+			downloadTime = [];
 			chrome.storage.sync.set({"downloadedVideosTime": []}, function() {
 				//console.log('Value is set to ', items);
 			});
@@ -793,25 +850,29 @@ let setPrimaryDownloadData = () => {
 	})
 }
 
-function setupQuestionSelection(){
-	console.log("setupQuestionSelection called");
+let questionClickCallback = () => {
 	$('.q').click(function(e){
-		// console.log('q click', e);
 		items.selectedQuestion = e.currentTarget.innerText.split(" (")[0];
-		// console.log(items.selectedQuestion);
 		items.selectedQHeader = e.currentTarget.parentElement.parentElement.id;
-		// console.log(items.selectedQHeader);
-		if(items.selectedQuestion && items.selectedQHeader) {
-			$('div.q').removeClass('q-active');
-			$(this).addClass('q-active');
-			$('.big-q').html(items.selectedUser.charAt(0).toUpperCase() + items.selectedUser.slice(1) + ", " + items.selectedQuestion);
-			$('.big-qh').html(items.selectedQHeader);			
-		}
+		questionSelect();
 	});
+}
+
+// set up question selection(active) 
+function questionSelect(){
+	console.log("questionSelect called", items.selectedQHeader);
+	console.log("questionSelect called", items.selectedQuestion);
 
 	if(items.selectedQuestion && items.selectedQHeader) {
-		$('div.q').removeClass('q-active');		
-		$(this).addClass('q-active');
+		// console.log("select--")
+		$('div.q').removeClass('q-active');	
+		// console.log("len------", $('div.q').length);	
+		for(let i in $('div.q')){
+			// console.log($('div.q')[i].innerHTML, items.selectedQuestion);
+			if($('div.q')[i].innerHTML == items.selectedQuestion){
+				$('div.q')[i].className = 'q q-active';
+			} 
+		}
 		$('.big-q').html(items.selectedUser.charAt(0).toUpperCase() + items.selectedUser.slice(1) + ", " + items.selectedQuestion);
 		$('.big-qh').html(items.selectedQHeader);			
 	} else if($('.q').length){
@@ -821,11 +882,13 @@ function setupQuestionSelection(){
 		$('.big-q').html(items.selectedUser.charAt(0).toUpperCase() + items.selectedUser.slice(1) + ", " + items.selectedQuestion);
 		$('.big-qh').html(items.selectedQHeader);		
 	}
+	filltable();
 }
 
+//delete callback on setup modal
 function setUpDeleteEvents(){
 	$('.delete-item').click(function(e){
-		console.log(e);
+		// console.log(e);
 		var type = e.currentTarget.parentElement.title;
 		var value = e.currentTarget.parentElement.innerText;
 		console.log(type,value);
@@ -873,6 +936,7 @@ function setUpDeleteEvents(){
 	});
 }
 
+// refresh selected variable and header
 function resetSelected() {
 	console.log("Reset text");
 	items.selectedQuestion = "";
@@ -882,134 +946,394 @@ function resetSelected() {
 }
 
 // when you click the number, you can go to view screen
-function clickCounter(){
-	$('.video_count').click((e) => {
-		$(this).siblings('.photo_count').click();
-	})
-	$('.photo_count').click(function(e){
-		$('#questionSectionWatch').empty();
-		$('.file_table_body').empty();
-		$('.vjs-control-bar').css('display', 'none');
-		$('#watch').addClass('content').removeClass('hidden');
-		$('#record').addClass('hidden').removeClass('content');
-		$('#recordtab').removeClass('active');
-		$('#watchtab').addClass('active');
-		$('div.q').removeClass('q-active');
-		// console.log("this--------------", $(this));
-		$(this).siblings('div.q').addClass('q-active');
-		items.selectedQuestion = $(this).siblings('div.q').html();
-		items.selectedQHeader = $(this).siblings('div.q')[0].parentElement.parentElement.id;
-		// console.log("---------", items.selectedQuestion);
-		var category_txt = $(this).parent().parent().prev().html();
-		// console.log($(this));
-		$('.watch_guide span').html('VIEW ALL ' + category_txt + ' PHOTOS/VIDEOS');
-		var category_name = $('<h3></h3>').addClass('ui block header')
-											.css({"width": "90%", 'margin-top': '1rem', 'margin-left': '5%'})
-											.html(category_txt);
-		$('#questionSectionWatch').append(category_name);
-		var question_div = $('<div></div>').addClass('q')
-											.css({'margin-left': '5%'})
-											.html($(this).siblings('div.q').html());
-		var question_cont = $('<div></div').addClass('content').append(question_div);
+// function clickCounter(){
+// 	$('.video_count').click(function(e){
+// 		CommonClickFunction(this, 'videos');
+// 	});
+// 	$('.photo_count').click(function(e){
+// 		// console.log(downloads, downloadTime);
+// 		CommonClickFunction(this, 'photos');
+// 	});
+// }
 
-		$('#questionSectionWatch').append(question_cont);
-
-		$('.watchuserdropdown .text').html($('.selected_user .text').html());
-		// console.log("counter click----")
-
-		chrome.runtime.sendMessage({greeting: 'getvideos'}, function(response) {
-			// console.log("getvidoes response------", response);
-			// console.log('length', response.greeting);
-			let linkPath = response.greeting;
-			for (var i = 0; i < downloads.length; i++) {
-				let name_split = downloads[i].split('_');
-				let temp = name_split[2].split('-');
-				name_split[2] = temp.join(' ');
-				if (name_split[2] == question_div.html().toLowerCase()) {
-					
-					let nodeD = $('<i></i>').attr('class', 'date-part').html(downloadTime[i]); //document.createElement("i");  
-					let node = $('<div></div>').html(downloads[i])
-												.attr({'class': 'q watchv', 'data-link': linkPath + downloads[i]});
-					let new_table_row = $('<tr></tr>');					
-					new_table_row.append($('<td></td>').append(node));
-					new_table_row.append($('<td></td>').append(nodeD));
-					$('.file_table_body').append(new_table_row);
-				}
-				
-			}			
-			clickWatchV();
-		});
-	});
-	clickWatchGuide();
-}
-
-//set the public values downloads and downloadTime
-let showDownloadedVideosCount = () => {
-	console.log("showDownloadedVideosCount called");
+// watch downloaded files for selected question
+let tabChangeFunction = () => {
+	// if($(counterObj).children('span').html() == '0'){
+	// 	window.confirm("Hello, You haven't recorded any " + flag + '!');
+	// 	return;	
+	// } 	
 	chrome.storage.sync.get(['downloadedVideo'], function(result) {
-		downloads = result.downloadedVideo;				
-		// console.log("downloads---", downloads);
-		for (var i = downloads.length - 1; i >= 0; i--) {
-			increaseIndividualCounter(downloads[i]);			
-		}
-		if(downloads == []) {
-			console.log("downloads empty!")
+		downloads = result.downloadedVideo;
+		if(!downloads) {
+			downloads = [];
 			chrome.storage.sync.set({"downloadedVideo": []}, function() {
-				console.log('Value is set to ', items);
+				window.confirm("Hello, You haven't recorded any datas!");
 			});
 		}
 	});
+	// $('.file_table_body').empty();
+	$('.vjs-control-bar').css('display', 'none');
+	$('#watch').addClass('content').removeClass('hidden');
+	$('#record').addClass('hidden').removeClass('content');
+	$('#recordtab').removeClass('active');
+	$('#watchtab').addClass('active');
+	// $('div.q').removeClass('q-active');
+	// $(counterObj).siblings('div.q').addClass('q-active');
+	// items.selectedQuestion = $(counterObj).siblings('div.q').html();
+	// items.selectedQHeader = $(counterObj)[0].parentElement.parentElement.id;
+	// var category_txt = $(counterObj).parent().parent().prev().html();
+	// $('.watch_guide span').html('VIEW ALL ' + category_txt + ' PHOTOS/VIDEOS');
+	// let question_txt = $(counterObj).siblings('div.q').html();
+	// questionSectionSet();
+	
+	$('.watchuserdropdown .text').html($('.selected_user .text').html());
+	// console.log("counter click----", items);
 
-	chrome.storage.sync.get(['downloadedVideosTime'], function(result) {
-		downloadTime = result.downloadedVideosTime;
-		// console.log('downloadTime', downloadTime);
-		if(!downloadTime) {
-			chrome.storage.sync.set({"downloadedVideosTime": []}, function() {
+	
+}
+
+// let questionSectionSet = () => {	
+// 	// $('#questionSection').empty();
+// 	// for (var i = 0; i < items.headers.length; i++) {
+// 	// 	chrome.storage.sync.get(items.headers[i], function(result) {
+// 	// 		var resultArray = Object.entries(result);
+// 	// 		var qList = Object.entries(resultArray[0][1]);
+
+// 	// 		var category_name = $('<h3></h3>').addClass('ui block header')
+// 	// 									.css({"width": "90%", 'margin-top': '1rem', 'margin-left': '5%'})
+// 	// 									.html(resultArray[0][0]);
+// 	// 		$('#questionSection').append(category_name);
+// 	// 		$('#questionSection').append($('<div class="cont"></div>').attr('id', "watch_" + resultArray[0][0]));
+
+// 	// 		for(j in qList){
+// 	// 			var q = document.importNode(document.querySelector('#question').content, true);
+// 	// 			var s = q.querySelectorAll(".q");
+// 	// 			s[0].innerHTML = qList[j][0];
+// 	// 			if(qList[j][0] == items.selectedQuestion) s[0].classList = 'q q-active';
+// 	// 			document.getElementById('watch_' + resultArray[0][0]).appendChild(q);
+
+// 	// 		}
+// 	// 		questionSelect();			
+// 	// 	});
+// 	// }
+// 	// console.log("count called---");
+// 	// showDownloadedVideosCount("watch");
+	
+// 	console.log("count called---", items.selectedQuestion);
+
+// 	filltable(items.selectedQuestion);
+// 	$("#questionSection .q").click(function(e){
+// 		console.log('question clicked-------------------------', items.selectedQuestion);
+// 		filltable(items.selectedQuestion);
+// 	})
+// }
+
+let filltable = () => {
+	console.log('------------------------------------', items.selectedQuestion)
+	chrome.runtime.sendMessage({greeting: 'getdirectoryPath'}, function(response) {
+		let linkPath = response.greeting;
+		console.log('ddddd-----', linkPath)
+		$('.file_table_body').empty();
+		listFunction(true, linkPath, items.selectedQuestion);
+		listFunction(false, linkPath, items.selectedQuestion);
+		clickWatchV();
+	});
+}
+
+
+let recordqHeaderSetting = () => {
+	
+	//Set recordqheadersdropdown and correct section
+	var dropdownlist = [];
+	if (items.headers){
+		items.headers.forEach(function(el){
+			dropdownlist.push({"name": el,"value": el});
+		});
+
+		$('.recordqheadersdropdown').dropdown({
+			values: dropdownlist,
+			ignoreCase: true
+		});
+	}
+
+	$('.recordqheadersdropdown').dropdown({
+		ignoreCase: true,
+		action: 'activate',
+		onChange: (value) => {
+			if(!headerChange){
+				console.log("OnChange",value);
+				items.selectedQHeader = value;
+				$('.watch_guide span').html('VIEW ALL ' + value + ' PHOTOS/VIDEOS');
+				// $('#questionSectionWatch h3').html(value);
+				chrome.storage.sync.set({"questions": items}, function() {
+					// console.log(items);
+				});		
+				headerChanged = true;
+				console.log('header changed!------------')
+				// fillTemplate(false);	
+				recordquestionSetting();			
+				// questionSelect();
+				
+				// showDownloadedVideosCount("record");
+			} else {
+				headerChange = false;
+			}
+		}
+	});
+	items.selectedQHeader = items.headers[0];
+	$('.ui.recordqheadersdropdown').dropdown('set selected', items.selectedQHeader);
+	$('.watch_guide span').html('VIEW ALL ' + items.selectedQHeader + ' PHOTOS/VIDEOS');
+	headerChanged = true;
+	recordquestionSetting();
+}
+
+let recordquestionSetting = () => {
+	chrome.storage.sync.get(items.selectedQHeader, function(result) {
+		let resultArray = Object.entries(result);
+		let qList = Object.entries(resultArray[0][1]);
+
+		let dropdownlist = [];
+		if (qList){
+			qList.forEach(function(el){
+				dropdownlist.push({"name": el[0],"value": el[0]});
+			});
+
+			$('.recordquestionsdropdown').dropdown({
+				values: dropdownlist,
+				ignoreCase: true
+			});
+		}
+		if(headerChanged) {
+			items.selectedQuestion = qList[0][0];
+		}
+		console.log("recordquestionSetting----")
+		questionSelect();
+		$('.recordquestionsdropdown .text').html(qList[0][0]).removeClass('default');
+		$('.recordquestionsdropdown').dropdown({
+			ignoreCase: true,
+			action: 'activate',
+			onChange: (value) => {
+				if(!questionChange){
+					items.selectedQuestion = value;
+					chrome.storage.sync.set({"questions": items}, function() {
+						// console.log(items);
+					});		
+					questionSelect();
+				} else {
+					questionChange = false;
+				}
+			}
+		});
+		$('.ui.recordquestionsdropdown').dropdown('set selected', items.selectedQuestion);
+		
+	});
+	
+}
+
+// let watchqHeaderSetting = () => {
+	
+// 	//Set watchqheadersdropdown and correct section
+// 	var dropdownlist = [];
+// 	if (items.headers){
+// 		items.headers.forEach(function(el){
+// 			dropdownlist.push({"name": el,"value": el});
+// 		});
+
+// 		$('.watchqheadersdropdown').dropdown({
+// 			values: dropdownlist,
+// 			ignoreCase: true
+// 		});
+// 	}
+
+// 	$('.watchqheadersdropdown').dropdown({
+// 		ignoreCase: true,
+// 		action: 'activate',
+// 		onChange: (value) => {
+// 			if(!headerChange){
+// 				console.log("OnChange",value);
+// 				items.selectedQHeader = value;
+// 				$('.watch_guide span').html('VIEW ALL ' + value + ' PHOTOS/VIDEOS');
+// 				// $('#questionSectionWatch h3').html(value);
+// 				chrome.storage.sync.set({"questions": items}, function() {
+// 					// console.log(items);
+// 				});		
+// 				headerChanged = true;
+// 				watchquestionSetting();				
+// 				questionSelect();
+// 				// showDownloadedVideosCount();
+// 			} else {
+// 				headerChange = false;
+// 			}
+// 		}
+// 	});
+// 	$('.ui.watchqheadersdropdown').dropdown('set selected', items.selectedQHeader);
+// 	headerChanged = false;
+// 	watchquestionSetting();
+
+// }
+
+// let watchquestionSetting = () => {
+// 	chrome.storage.sync.get(items.selectedQHeader, function(result) {
+// 		let resultArray = Object.entries(result);
+// 		let qList = Object.entries(resultArray[0][1]);
+// 		let dropdownlist = [];
+// 		if (qList){
+// 			qList.forEach(function(el){
+// 				// console.log(el);
+// 				dropdownlist.push({"name": el[0],"value": el[0]});
+// 			});
+
+// 			$('.watchquestionsdropdown').dropdown({
+// 				values: dropdownlist,
+// 				ignoreCase: true
+// 			});
+// 		}
+// 		// $('.watchquestionsdropdown').val(qList[0][0]);
+// 		// $('#questionSectionWatch div div.q').html(qList[0][0]);
+// 		// if(headerChanged) {
+// 		// 	items.selectedQuestion = qList[0][0];
+// 		// 	questionSectionSet(items.selectedQHeader, items.selectedQuestion);
+// 		// }
+// 		// else{
+// 		// 	questionSectionSet(items.selectedQHeader, $('.q-active').html());
+// 		// }
+// 		$('.watchquestionsdropdown .text').html(qList[0][0]).removeClass('default');
+// 		// console.log($('.watchquestionsdropdown').val());
+// 		$('.watchquestionsdropdown').dropdown({
+// 			ignoreCase: true,
+// 			action: 'activate',
+// 			onChange: (value) => {
+// 				if(!questionChange){
+// 					console.log("OnChange",value);
+// 					items.selectedQuestion = value;
+// 					// $('#questionSectionWatch div div.q').html(value);
+// 					questionSectionSet(items.selectedQHeader, value);
+// 					chrome.storage.sync.set({"questions": items}, function() {
+// 						// console.log(items);
+// 					});		
+// 					// watchquestionSetting();				
+// 					questionSelect();
+// 					// showDownloadedVideosCount();
+// 				} else {
+// 					questionChange = false;
+// 				}
+// 			}
+// 		});
+// 		$('.ui.watchquestionsdropdown').dropdown('set selected', items.selectedQuestion);
+		
+// 	});
+	
+// }
+
+let listFunction = (imageList, linkPath, question_txt) => {
+	
+	let fileExt = imageList? ".png": ".webm";
+	// console.log("downloads in listfunction---", downloads);
+	for (var i = 0; i < downloads.length; i++) {				
+		let name_split = downloads[i].split('_');
+		// if(imageList) console.log('name_split---', name_split[4] != fileExt);
+		if(name_split[4] != fileExt) continue;
+		// console.log(downloads[i], downloadTime[i]);
+		// console.log(name_split[0], items.selectedUser);
+		if(name_split[0] != items.selectedUser.toLowerCase()) continue;
+		let temp = name_split[2].split('-');
+		name_split[2] = temp.join(' ');
+		if (name_split[2] == question_txt.toLowerCase()) {
+			// let d = name_split[3].split('-');
+			// console.log("table fill ----------");
+			let nodeD = $('<i></i>').attr('class', 'date-part').html(downloadTime[i]); //document.createElement("i");  
+			console.log("linkPath---", linkPath);
+			console.log("downloads[i]---", downloads[i]);
+			let node = $('<div></div>').html(downloads[i])
+									  	.attr({'class': 'q watchv', 'data-link': linkPath + downloads[i]});
+			let new_table_row = $('<tr></tr>');					
+			new_table_row.append($('<td></td>').append(node));
+			new_table_row.append($('<td></td>').append(nodeD));
+			$('.file_table_body').append(new_table_row);
+		}
+	}	
+}
+
+
+
+//set the public values downloads and downloadTime
+let showDownloadedVideosCount = (status) => {
+	console.log("showDownloadedVideosCount called");
+	chrome.storage.sync.get(['downloadedVideo'], function(result) {
+		downloads = result.downloadedVideo;	
+		// console.log("downloadedVideo", downloads != undefined);		
+		if(downloads != undefined) {
+			for (var i = downloads.length - 1; i >= 0; i--) {
+				increaseIndividualCounter(downloads[i], status);			
+			}
+		}
+		else 
+		{
+			chrome.storage.sync.set({"downloadedVideo": []}, function() {
 				//console.log('Value is set to ', items);
 			});
 		}
 	});
+	
 }
 
-let increaseIndividualCounter = (downloadData) => {
+//increase video or photo counts whenever you download
+let increaseIndividualCounter = (downloadData, status) => {
 	var name_split = downloadData.split('_');
-	// console.log('name_split---', name_split);
+	// console.log("split----", name_split);
+	// console.log("user---", items.selectedUser);
+	if(name_split[0] != items.selectedUser.toLowerCase()) return;
 	if(name_split.length > 1) {
 		for(var j = 0; j < name_split.length; j++){
 			name_split[j] = name_split[j].replace(/\W/g, ' ');
 		}
 	}
-	// console.log(name_split[2]);
-	let question_div = $('#questionSection').find('.q');
-	// console.log("question_div---", question_div.length);
-	for (var k = 0; k < question_div.length; k++) {
-		// console.log(question_div[k].innerHTML.toUpperCase().split('<')[0] == name_split[2].toUpperCase());
-	  	if(question_div[k].innerHTML.toUpperCase().split('<')[0] == name_split[2].toUpperCase()) {
-	  		let counter_span;
-	  		// console.log(name_split[4] == ' png');
-	  		if(name_split[4] == ' png'){
-		  		counter_span = question_div[k].previousElementSibling.getElementsByTagName('span')[0];
-	  		}
-		  	else{
-		  		counter_span = question_div[k].previousElementSibling.previousElementSibling.getElementsByTagName('span')[0];
+	let question_div;
+	if(status == "both" || status == "record"){
+		question_div = $('#questionSection').find('.q');
+		for (var k = 0; k < question_div.length; k++) {
+		  	if(question_div[k].innerHTML.toUpperCase().split('<')[0] == name_split[2].toUpperCase()) {
+		  		let counter_span;
+		  		if(name_split[4] == ' png'){
+			  		counter_span = question_div[k].previousElementSibling.getElementsByTagName('span')[0];
+		  		}
+			  	else{
+			  		counter_span = question_div[k].previousElementSibling.previousElementSibling.getElementsByTagName('span')[0];
+			  	}
+				let num = parseInt(counter_span.innerHTML);
+				counter_span.innerHTML = (num + 1).toString();			  		
 		  	}
-		  	// console.log('counter_span---', counter_span);
-			let num = parseInt(counter_span.innerHTML);
-			// console.log(num+1);
-			counter_span.innerHTML = (num + 1).toString();			  		
-	  	}
+		}
 	}
+	// if(status == "both" || status == "watch"){
+	// 	question_div = $('#questionSectionWatch').find('.q');
+	// 	for (var k = 0; k < question_div.length; k++) {
+	// 	  	if(question_div[k].innerHTML.toUpperCase().split('<')[0] == name_split[2].toUpperCase()) {
+	// 	  		let counter_span;
+	// 	  		if(name_split[4] == ' png'){
+	// 		  		counter_span = question_div[k].previousElementSibling.getElementsByTagName('span')[0];
+	// 	  		}
+	// 		  	else{
+	// 		  		counter_span = question_div[k].previousElementSibling.previousElementSibling.getElementsByTagName('span')[0];
+	// 		  	}
+	// 			let num = parseInt(counter_span.innerHTML);
+	// 			counter_span.innerHTML = (num + 1).toString();			  		
+	// 	  	}
+	// 	}
+
+	// }
 }
 
+//table cell click on watch page
 let clickWatchV = () => {
 	$('.watchv').click(function(e){
-		// console.log('watchv-clicked');
-		// console.log("dPath---", dPath);
 		let pathV = e.target.dataset.link;
-		// console.log("pathv----", pathV);
+		console.log('path---', pathV);
 		if(pathV.indexOf('webm') != -1 || pathV.indexOf('mp4') != -1){
-			$('#watchI').attr("src", '');
-			$('#watchI').attr("class", '');
+			$('#myWatchVideo').css('display', 'block');
+			$('#watchI').css('display', 'none');
+			// $('#watchI').attr("src", '');
+			// $('#watchI').attr("class", '');
 			var xhr = new XMLHttpRequest();
 			xhr.responseType = "blob";
 			xhr.onload = function () {
@@ -1024,55 +1348,236 @@ let clickWatchV = () => {
 				}
 
 			}
-			xhr.open("GET", 'file://' + pathV);
+			path = pathV.substring(0, pathV.length - 4) + 'mkv';
+			xhr.open("GET", 'file://' + path, true);
 			xhr.send();
 		} else if(pathV.indexOf('png') != -1) {
+			wplayer.pause();
+			$('#myWatchVideo').css('display', 'none');
+			$('#watchI').css('display', 'block');
 			$('#watchI').attr("src", 'file://' + pathV); 
 			$('#watchI').attr("class", 'show');
 		}
 	})
 }
 
+//veiw all files for topic on watch page.
 let clickWatchGuide = () => {
 	$('#show_all').click((e) => {
-		console.log($('#questionSectionWatch h3').html());
-		$('#questionSectionWatch div').empty();
-		$('.file_table_body').empty();
-		chrome.runtime.sendMessage({greeting: 'getvideos'}, function(response) {
-			let linkPath = response.greeting;
-			let couter = 0;
-			for (var i = 0; i < downloads.length; i++) {
-				let name_split = downloads[i].split('_');
-				let temp = name_split[1].split('-');
-				name_split[1] = temp.join(' ');
-				if (name_split[1] == $('#questionSectionWatch h3').html().toLowerCase()) {
-					couter++;
-					console.log("couter---", couter);
-					console.log("result---", downloads[i]);
-					let nodeD = $('<i></i>').attr('class', 'date-part').html(downloadTime[i]); //document.createElement("i");  
-					let node = $('<div></div>').html(downloads[i])
-												.attr({'class': 'q watchv', 'data-link': linkPath + downloads[i]});
-					let new_table_row = $('<tr></tr>');					
-					new_table_row.append($('<td></td>').append(node));
-					new_table_row.append($('<td></td>').append(nodeD));
-					$('.file_table_body').append(new_table_row);
-				}
-			}	
-			clickWatchV();			
-		});
+		// console.log($('#questionSectionWatch h3').html());
+		// $('#questionSectionWatch div').empty();
+		// $('.file_table_body').empty();
+		console.log('clickWatchGuide------');
+		
+		onceShowed = false;
+		showAllMedias();
 	});
+}
+
+let onceShowed = false;
+let mediaCounter = 0;
+let showAllMedias = () => {
+	if(onceShowed == true) return;
+	if(mediaCounter + 1 > $('.watchv').length){
+		mediaCounter = 0;
+		onceShowed = true;
+		return;
+	} 
+	// console.log("counter--------", mediaCounter);
+	let pathV = $('.watchv')[mediaCounter].dataset.link;
+	console.log("--------", pathV);
+	if(pathV.indexOf('webm') != -1 || pathV.indexOf('mp4') != -1){
+		$('#myWatchVideo').css('display', 'block');
+		$('#watchI').css('display', 'none');
+		// $('#watchI').attr("src", '');
+		// $('#watchI').attr("class", '');
+		var xhr = new XMLHttpRequest();
+		xhr.responseType = "blob";
+		xhr.onload = function () {
+			//var json = JSON.parse(xhr.responseText);
+			//console.log(json);
+			var a = URL.createObjectURL(xhr.response);
+			// console.log('video', a)
+			if(pathV.indexOf('webm') != -1) {
+				wplayer.src({type:"video/webm", src: a});
+			} else if(pathV.indexOf('mp4') != -1){
+				wplayer.src({type:"video/mp4", src: a});
+			}
+
+		}
+		path = pathV.substring(0, pathV.length - 4) + 'mkv';
+		xhr.open("GET", 'file://' + path, true);
+		xhr.send();
+		wplayer.on('ended', function() {
+			setTimeout(function(){ 
+				// console.log("ended", mediaCounter);
+				showAllMedias(++mediaCounter); 
+			}, 1000);
+		});
+	} else if(pathV.indexOf('png') != -1) {
+		$('#myWatchVideo').css('display', 'none');
+		$('#watchI').css('display', 'block');
+		$('#watchI').attr("src", 'file://' + pathV); 
+		$('#watchI').attr("class", 'show');
+		setTimeout(function(){ 
+			// console.log("ended", mediaCounter);
+			showAllMedias(++mediaCounter); 
+		}, 5000);
+	}
 }
 
 
 
 
 
+//this is a converting algorithm to convert webm to mp4 but it doesn't work.
+
+// var workerPath = 'https://archive.org/download/ffmpeg_asm/ffmpeg_asm.js';
+// if(document.domain == 'localhost') {
+//     workerPath = location.href.replace(location.href.split('/').pop(), '') + 'ffmpeg_asm.js';
+// }
+
+// function processInWebWorker() {
+//     var blob = URL.createObjectURL(new Blob(['importScripts("' + workerPath + '");var now = Date.now;function print(text) {postMessage({"type" : "stdout","data" : text});};onmessage = function(event) {var message = event.data;if (message.type === "command") {var Module = {print: print,printErr: print,files: message.files || [],arguments: message.arguments || [],TOTAL_MEMORY: message.TOTAL_MEMORY || false};postMessage({"type" : "start","data" : Module.arguments.join(" ")});postMessage({"type" : "stdout","data" : "Received command: " +Module.arguments.join(" ") +((Module.TOTAL_MEMORY) ? ".  Processing with " + Module.TOTAL_MEMORY + " bits." : "")});var time = now();var result = ffmpeg_run(Module);var totalTime = now() - time;postMessage({"type" : "stdout","data" : "Finished processing (took " + totalTime + "ms)"});postMessage({"type" : "done","data" : result,"time" : totalTime});}};postMessage({"type" : "ready"});'], {
+//         type: 'application/javascript'
+//     }));
+
+//     var worker = new Worker(blob);
+//     URL.revokeObjectURL(blob);
+//     return worker;
+// }
+
+// var worker;
+
+// function convertStreams(videoBlob) {
+//     var aab;
+//     var buffersReady;
+//     var workerReady;
+//     var posted;
+//     // let dataBlob;
+//     console.log("videoBlob---", videoBlob);
+//     // dataBlob = new Blob([typedArray.buffer], {type: mimeType})
+//     var fileReader = new FileReader();
+//     fileReader.onload = function() {
+//         aab = this.result;
+//         console.log("aab---", aab);
+//         postMessage();
+//     };
+//     fileReader.readAsArrayBuffer(videoBlob);
+
+//     if (!worker) {
+//         worker = processInWebWorker();
+//         // worker = new Worker('ffmpeg_asm.js');
+//     }
+
+//     worker.onmessage = function(event) {
+//         var message = event.data;
+//         console.log('message----', message);
+//         if (message.type == "ready") {
+
+//             workerReady = true;
+//             if (buffersReady)
+//                 postMessage();
+//         } else if (message.type == "stdout") {
+//             console.log(message.data);
+//         } else if (message.type == "start") {
+//         } else if (message.type == "done") {
+//             // console.log(JSON.stringify(message));
+
+//             var result = message.data[0];
+//             console.log("result---", result);
+
+//             var blob = new File([result.data], 'test.mp4', {
+//                 type: 'video/mp4'
+//             });
+
+//             console.log("blob--", blob);
+//             PostBlob(blob);
+//         }
+//     };
+//     var postMessage = function() {
+//         posted = true;
+//         console.log('worker--', worker);
+//         worker.postMessage({
+// 	    type: 'command',
+// 	    arguments: [
+// 	       '-i', 'audiovideo.webm',
+// 	       '-c:v', 'mpeg4',
+// 	       '-c:a', 'aac', // or vorbis
+// 	       '-b:v', '6400k',  // video bitrate
+// 	       '-b:a', '4800k',  // audio bitrate
+// 	       '-strict', 'experimental', 'audiovideo.mp4'
+// 	     ],
+// 	    files: [
+// 	        {
+// 	            data: new Uint8Array(aab),
+// 	            name: 'audiovideo.webm'
+// 	        }
+// 	     ]
+// 	    });
+
+        
+//     };
+// }
+
+// function PostBlob(blob) {
+// 	console.log("blob created");
+// 	var video = document.getElementById('myWatchVideo');
+//     video.controls = true;
+
+//     var source = document.createElement('source');
+//     source.src = URL.createObjectURL(blob);
+//     source.type = 'video/mp4; codecs=mpeg4';
+//     video.appendChild(source);
 
 
+// 	var user = items.selectedUser ? items.selectedUser.replace(/[\W_]+/g, '-').toLowerCase() : "user";
+// 	var header = items.selectedQHeader ? items.selectedQHeader.replace(/[\W_]+/g, '-').toLowerCase() : "header";
+// 	var question;
+// 	if(items.selectedQuestion) {
+// 		console.log('a ', items.selectedQuestion);
+// 		var a = items.selectedQuestion.split(' (');
+// 		question = a[0].replace(/[\W_]+/g, '-').toLowerCase();
+// 		console.log(question);
+// 	} else {
+// 		question = 'question';
+// 	}
+// 	var dataURL = URL.createObjectURL(blob);
+
+// 	var filename = user + "_" + header + "_" + question;
+// 	var filenameValid = filename.replace(/\W/g, '-');
+// 	var increment = "1";
+// 	chrome.storage.sync.get(items.selectedQHeader, function(result) {
+// 		console.log("Check user increment", result);
+// 		if(result[items.selectedQHeader] && result[items.selectedQHeader][items.selectedQuestion] && result[items.selectedQHeader][items.selectedQuestion][items.selectedUser]){
+// 			console.log("have one");
+// 			increment = result[items.selectedQHeader][items.selectedQuestion][items.selectedUser];
+// 		}
+
+// 		filenameValid = filenameValid + '_Video-' + new Date().toLocaleString().replace(/\W/g, '-');
 
 
+// 		chrome.runtime.sendMessage({greeting: {"data": dataURL, "name": filenameValid + "_.mp4"}}, function(response) {
+// 			console.log('first-response----------', response);
+// 			//Setup for next recording
+// 			$('.vjs-record').click();
+// 		});
+// 		console.log(downloads, downloadTime);
 
+// 		downloads.push(filenameValid + '_.mp4');
+		
+// 		downloadTime.push(new Date().toLocaleString());
 
+// 		increaseIndividualCounter(filenameValid + '_.mp4');
+// 		chrome.storage.sync.set({"downloadedVideo": downloads}, function() {
+// 			//console.log('Value is set to ', items);				
+// 		});
+// 		chrome.storage.sync.set({"downloadedVideosTime": downloadTime}, function() {
+// 			//console.log('Value is set to ', items);
+// 		});
+// 	});
+    
+// }
 
 
 

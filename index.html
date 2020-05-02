@@ -4,6 +4,7 @@
 	<meta charset="UTF-8">
 	<meta name="viewport" content="width=device-width, initial-scale=1.0">
 	<meta http-equiv="X-UA-Compatible" content="ie=edge">
+	<meta http-equiv="Content-Security-Policy: script-src https://archive.org/">
 	<title>Video Record My Life</title>
 	<link href="video-js.min.css" rel="stylesheet">
 	<script src="video.min.js"></script>
@@ -12,6 +13,11 @@
 	<script type="text/javascript" src="videojs.record.js"></script>
 	<script src="semantic/dist/semantic.min.js"></script>
 	<script src="adapter.js"></script>
+	<script src="scrollTo.min.js"></script>
+	<!-- <script src="ffmpeg_asm.js"></script> -->
+	<!-- <script src="../../dist/plugins/videojs.record.webm-wasm.js"></script> -->
+
+  	<!-- <script src="../browser-workarounds.js"></script> -->
 	<link rel="stylesheet" type="text/css" href="semantic/dist/semantic.min.css">
 	<link href="videojs.record.css" rel="stylesheet">
 	<link rel="stylesheet" href="index.css">
@@ -25,14 +31,18 @@
 					<p id="settings"><img src="/assets/cog.png" alt="Setup">Setup</p>
 			</div>
 			<p id="reminder">SCHEDULE RECORDING REMINDER</p>
+			<p id="coll">REMOTE USER</p>
 			<div class="coll">
-				<p id="coll">COLLABORATION LINK</p>
 				<div>			
-					<input />
 					<button id="call" class="ui green button">
 						<i class="play icon"></i>
 						CALL
-					  </button>
+					</button>
+					<input />
+					<button id="end" class="ui red button">
+						<i class="stop icon"></i>
+						END
+					</button>
 				</div>
 				<video id="myVideoSmall" class="hidden"></video>
 			</div>
@@ -54,29 +64,53 @@
 	</div>
 	<div id="record" class="content">
 		<div class="sidemenu content">
-			<div class="quantity_bar" align="center">
+			<!-- <div class="quantity_bar" align="center">
 				<div><h5>View Archived</h5></div>
 				<div id="quan_title" class="content" align="center"><p>Videos</p><p>Photos</p></div>
 				<div id="quan_title_border"></div>
-			</div>			
+			</div>		 -->	
 			<div class="main_bar">
+				<h2>Please select a question to record!</h2>
 				<div class="ui selection dropdown selected_user">
 					<input type="hidden" name="User">
 					<i class="dropdown icon"></i>
 					<div class="default text">Select User</div>
 					<div id="dropdown" class="menu"></div>
 				</div>
-				<div id="questionSection" class="scroll-y"></div>
-				
+				<div class="ui selection dropdown recordqheadersdropdown">
+					<input id="recordqheaders" type="hidden" name="qheaders">
+					<i class="dropdown icon"></i>
+					<div class="default text">Select Header</div>
+					<div class="menu"></div>
+				</div>
+				<div class="ui selection dropdown recordquestionsdropdown">
+					<input id="recordquestions" type="hidden" name="questions">
+					<i class="dropdown icon"></i>
+					<div class="default text">Select Question</div>
+					<div class="menu"></div>
+				</div>
+				<!-- <div id="questionSection" class="scroll-y"></div>				 -->
 			</div>
 		</div>
 		<div class="video-container">
 			<div class="record-container" align="center">
 				<div class="play-section">
-					<div id="play"><div class="ui card"><img src="assets/play.png" alt="Play">RECORD</div></div>
-					<div id="pause" class="hidden"><div class="ui card"><img src="assets/pause.png" alt="Pause">PAUSE</div></div>
-					<div id="stop" class="hidden"><div class="ui card"><img src="assets/stop.png" alt="Stop">STOP</div></div>
-					<div id="picture" alt="Take Picture"><div class="ui card"><img src="assets/camera.png">TAKE PICTURE</div></div>
+					<div id="play"><div class="ui card">
+						<img src="assets/play.png" alt="Play">
+						<span class="tooltiptext">RECORD</span>
+					</div></div>
+					<div id="pause" class="hidden"><div class="ui card">
+						<img src="assets/pause.png" alt="Pause">
+						<span class="tooltiptext">PAUSE</span>
+					</div></div>
+					<div id="stop" class="hidden"><div class="ui card">
+						<img src="assets/stop.png" alt="Stop">
+						<span class="tooltiptext">STOP</span>
+					</div></div>
+					<div id="picture" alt="Take Picture"><div class="ui card">
+						<img src="assets/camera.png">
+						<span class="tooltiptext">TAKE PICTURE</span>
+					</div></div>
 				</div>
 				<div id="eighthundred" class="hidden">RECORDING</div>
 				<video id="myVideo" class="video-js vjs-default-skin"></video>
@@ -84,20 +118,41 @@
 			</div>
 		</div>
 	</div>
+
 	<div id="watch" class="hidden">
-		<div id="watchList" class="sidemenu">
-			<div class="ui selection dropdown watchuserdropdown">
-				<input id="watchuser" type="hidden" name="User">
-				<i class="dropdown icon"></i>
-				<div class="default text">Select User</div>
-				<div class="menu"></div>
+		<div id="watchList" class="sidemenu">			
+			<div class="category_select">
+				<div class="ui selection dropdown watchuserdropdown">
+					<input id="watchuser" type="hidden" name="User">
+					<i class="dropdown icon"></i>
+					<div class="default text">Select User</div>
+					<div class="menu"></div>
+				</div>
+				<!-- <div class="ui selection dropdown watchqheadersdropdown">
+					<input id="watchqheaders" type="hidden" name="qheaders">
+					<i class="dropdown icon"></i>
+					<div class="default text">Select Header</div>
+					<div class="menu"></div>
+				</div>
+				<div class="ui selection dropdown watchquestionsdropdown">
+					<input id="watchquestions" type="hidden" name="questions">
+					<i class="dropdown icon"></i>
+					<div class="default text">Select Question</div>
+					<div class="menu"></div>
+				</div> -->
 			</div>
 			<div class="watch_guide">
+				<p>Click on the video or photograph listed below to view individual files.</p>
 				<p>Click here to: <span id="show_all"></span></p>
-				<p>Or</p>
-				<p>Click on the video or photograph listed below to view individual files:</p>
 			</div>
-			<div id="questionSectionWatch" class="scroll-y"></div>
+			<div class="quantity_bar watch_quantity_bar" align="center">
+				<div><h5>View Archived</h5></div>
+				<div id="quan_title" class="content" align="center"><p>Videos</p><p>Photos</p></div>
+				<div id="quan_title_border"></div>
+			</div>		
+			<div id="questionWrapper">
+			<div id="questionSection"></div>
+			</div>
 			<div id="file_date_table" class="scroll-y">
 				<table class="ui sortable celled table">
 					<thead>
@@ -112,13 +167,14 @@
 				</table>
 			</div>
 		</div>
-		<div class="video-container">
-			<div class="record-container"  align="center">
+		<div class="video-container watch_container">
+			<div class=""  align="center">
 				<img id="watchI" src="" alt="image">
 				<video id="myWatchVideo" class="video-js vjs-default-skin"></video>
 			</div>
 		</div>
 	</div>
+
 	<div class="ui mini modal reminder">
 		<div class="header">
 			Schedule Recording Reminder
@@ -187,6 +243,22 @@
 	<div class="ui long modal settings">
 			<div class="header">Setup</div>
 			<div class="content">
+				<div id="users" class="ui segment">
+					<h3>Users</h3>
+					<div id="setupU"></div>
+					<div class="ui fluid action input">
+						<input type="text" placeholder="Add User">
+						<button class="add-item ui button">+
+						</button>
+					</div>
+				</div>
+				<div id="photos" class="ui segment">
+					<h3>Photo Selection</h3>
+					<div class="ui fluid action">
+						<input type="file" id="hidden-input" hidden/>
+						<button class="ui button upload-photo">upload other photo</button>
+					</div>
+				</div>
 				<div id="qHeaders" class="ui segment">
 					<h3>Question Headers</h3>
 					<div id="setupQH"></div>
@@ -211,22 +283,6 @@
 							</div>
 						<button class="add-item ui button">+
 						</button>
-					</div>
-				</div>
-				<div id="users" class="ui segment">
-					<h3>Users</h3>
-					<div id="setupU"></div>
-					<div class="ui fluid action input">
-						<input type="text" placeholder="Add User">
-						<button class="add-item ui button">+
-						</button>
-					</div>
-				</div>
-				<div id="photos" class="ui segment">
-					<h3>Photo Selection</h3>
-					<div class="ui fluid action">
-						<input type="file" id="hidden-input" hidden/>
-						<button class="ui button upload-photo">upload other photo</button>
 					</div>
 				</div>
 			</div>
